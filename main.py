@@ -1,113 +1,128 @@
 import streamlit as st
+import sys
 import os
 import json
 
-# 모듈 임포트 (파일 구조에 맞게)
-try:
-    from fileio.parser import parse_json_requirements, save_temp_data
-    from sqlite.db_handler import DatabaseHandler
-except ImportError:
-    # 모듈이 없을 경우를 대비한 안전장치
-    st.error("필수 모듈(fileio, sqlite)을 찾을 수 없습니다.")
-    st.stop()
+# --- 경로 강제 설정 ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
 
+# --- 페이지 설정 ---
 st.set_page_config(
     page_title="Requirements Granularity Manager",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# --- 1. 세션 상태(Session State) 초기화 ---
-# 페이지가 리로드되어도 이 변수들은 메모리에 계속 남아있습니다.
-if 'raw_data' not in st.session_state:
-    st.session_state.raw_data = None  # 파싱된 JSON 데이터
-if 'file_name' not in st.session_state:
-    st.session_state.file_name = None # 현재 로드된 파일명
-if 'db_ids' not in st.session_state:
-    st.session_state.db_ids = []      # DB에 저장된 ID들 (추후 업데이트용)
+# --- 모듈 임포트 (폴더명 database로 변경) ---
+try:
+    # fileio는 그대로, sqlite는 database로 변경되었습니다.
+    from fileio.parser import parse_json_requirements, save_temp_data
+    from database.db_handler import DatabaseHandler  # <--- 여기가 변경됨
+except ImportError as e:
+    st.error(f"❌ 모듈 임포트 오류: {e}")
+    st.info("💡 1. 'sqlite' 폴더 이름을 'database'로 바꿨는지 확인하세요.")
+    st.info("💡 2. 'database' 폴더 안에 '__init__.py'가 있는지 확인하세요.")
+    st.stop()
 
-# --- 2. 사이드바: 파일 입력 및 초기화 ---
+# --- 1. 세션 초기화 ---
+if 'raw_data' not in st.session_state:
+    st.session_state.raw_data = None
+if 'file_name' not in st.session_state:
+    st.session_state.file_name = None
+if 'db_ids' not in st.session_state:
+    st.session_state.db_ids = []
+
+# --- 2. 사이드바 ---
 with st.sidebar:
     st.header("📂 파일 관리")
-    
-    # 파일 업로더
-    uploaded_file = st.file_uploader(
-        "JSON 요구사항 파일 선택", 
-        type=['json'], 
-        key="main_uploader"
-    )
+    uploaded_file = st.file_uploader("JSON 요구사항 파일 선택", type=['json'], key="main_uploader")
 
-    # 데이터 초기화 버튼
     if st.button("🗑️ 데이터 초기화 (Reset)"):
         st.session_state.raw_data = None
         st.session_state.file_name = None
         st.session_state.db_ids = []
         st.rerun()
 
-# --- 3. 데이터 처리 로직 (핵심: 세션 유지) ---
-
-# Case A: 새로운 파일이 업로드되었을 때 (기존 파일명과 다를 경우)
+# --- 3. 데이터 처리 ---
 if uploaded_file is not None and uploaded_file.name != st.session_state.file_name:
-    with st.spinner("파일을 분석하고 DB에 저장 중입니다..."):
+    with st.spinner("파일 분석 및 DB 저장 중..."):
         try:
-            # 1. 파일 파싱
             uploaded_file.seek(0)
             data = parse_json_requirements(uploaded_file)
             
             if data:
-                # 2. 세션에 저장 (메모리 상주)
                 st.session_state.raw_data = data
                 st.session_state.file_name = uploaded_file.name
                 
-                # 3. 임시 파일 저장 (물리 파일 백업)
+                # 임시 파일 저장
                 save_temp_data(data, "current_session_data.json")
                 
-                # 4. SQLite DB 저장 (영구 저장)
-                db = DatabaseHandler()
+                # DB 저장 (클래스 호출)
+                # database/db_handler.py에 DatabaseHandler 클래스가 있어야 함
+                db = DatabaseHandler() 
                 inserted_ids = db.insert_requirements(uploaded_file.name, data)
-                st.session_state.db_ids = inserted_ids # 저장된 ID 추적
+                st.session_state.db_ids = inserted_ids
                 
-                st.success(f"✅ '{uploaded_file.name}' 로드 및 저장 완료!")
-                st.rerun() # 화면 갱신
+                st.success(f"✅ '{uploaded_file.name}' 저장 완료!")
+                st.rerun()
         except Exception as e:
-            st.error(f"파일 처리 중 오류 발생: {e}")
+            st.error(f"처리 중 오류: {e}")
 
-# Case B: 업로드된 파일은 없지만, 이미 세션에 데이터가 있는 경우 (페이지 이동 등)
 elif uploaded_file is None and st.session_state.raw_data is not None:
-    # 아무 작업도 하지 않고 기존 st.session_state.raw_data를 그대로 사용합니다.
     pass
 
 # --- 4. 메인 화면 출력 ---
 st.title("🛡️ 요구사항 관리 시스템")
 
-# 데이터가 세션에 존재하면 화면을 표시
 if st.session_state.raw_data:
     st.info(f"현재 작업 중인 파일: **{st.session_state.file_name}**")
     
-    # 현황판
     col1, col2, col3 = st.columns(3)
+    
+    # 데이터 타입에 따라 개수 표시 방식 변경
+    data_count = 0
+    if isinstance(st.session_state.raw_data, list):
+        data_count = len(st.session_state.raw_data)
+    elif isinstance(st.session_state.raw_data, dict):
+        # 딕셔너리인 경우 키의 개수를 세거나 1로 간주
+        data_count = len(st.session_state.raw_data.keys())
+
     with col1:
-        st.metric(label="총 요구사항", value=f"{len(st.session_state.raw_data)} 건")
+        st.metric(label="데이터 항목 수", value=f"{data_count} 개")
     with col2:
-        st.metric(label="DB 저장 ID 범위", value=f"{st.session_state.db_ids[0]} ~ {st.session_state.db_ids[-1]}" if st.session_state.db_ids else "N/A")
+        if st.session_state.db_ids:
+            range_str = f"{st.session_state.db_ids[0]} ~ {st.session_state.db_ids[-1]}"
+        else:
+            range_str = "N/A"
+        st.metric(label="DB 저장 ID", value=range_str)
     with col3:
         st.metric(label="상태", value="Active ✅")
         
     st.divider()
-    
-    # 미리보기
     st.subheader("데이터 미리보기")
-    st.json(st.session_state.raw_data[0] if st.session_state.raw_data else {})
+    
+    # [수정된 부분] 데이터가 리스트인지 딕셔너리인지 확인하여 출력
+    preview_data = {}
+    if isinstance(st.session_state.raw_data, list) and len(st.session_state.raw_data) > 0:
+        st.caption("형식: 리스트(List) - 첫 번째 항목을 보여줍니다.")
+        preview_data = st.session_state.raw_data[0]
+    elif isinstance(st.session_state.raw_data, dict):
+        st.caption("형식: 객체(Dictionary) - 전체 내용을 보여줍니다.")
+        preview_data = st.session_state.raw_data
+    else:
+        st.warning("데이터가 비어있거나 올바르지 않은 형식입니다.")
+
+    st.json(preview_data)
     
     st.divider()
     st.success("데이터가 로드되었습니다. 왼쪽 사이드바의 **Pages** 메뉴로 이동하여 분석을 시작하세요.")
 
 else:
-    # 데이터가 없을 때
     st.warning("👈 왼쪽 사이드바에서 JSON 파일을 업로드해 주세요.")
     st.markdown("""
     ### 🚀 시작하기
     1. **Browse files** 버튼을 눌러 JSON 파일을 선택하세요.
     2. 파일이 자동으로 파싱되고 **SQLite DB**에 저장됩니다.
-    3. 이후 **Pages** 메뉴에서 상세 분석을 수행할 수 있습니다.
     """)
