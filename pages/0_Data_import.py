@@ -4,7 +4,82 @@ import sqlite3
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+
 import streamlit as st
+
+# ------------------------- Top navigation (horizontal) -------------------------
+PAGES = [
+    ("📥 Data Import", "pages/0_Data_import.py"),
+    ("🗺️ Overview", "pages/1_Overview.py"),
+    ("📚 Explorer", "pages/2_Requirements_Explorer.py"),
+    ("🔎 Detail", "pages/3_Requirement_Detail.py"),
+]
+
+def _hide_sidebar_css() -> None:
+    """Hide Streamlit's default left multipage navigation."""
+    st.markdown(
+        """
+        <style>
+        [data-testid="stSidebar"] { display: none !important; }
+        [data-testid="stSidebarNav"] { display: none !important; }
+        section.main { padding-left: 1rem !important; }
+        .block-container { padding-top: 2.3rem; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+def render_top_nav(current_path: str, title: str = "") -> None:
+    """Render a top horizontal navigation bar for page navigation."""
+    _hide_sidebar_css()
+
+    # Slightly more intuitive nav: icons + clear current page + a right-side status badge.
+    nav_cols = st.columns([1] * len(PAGES) + [1.8], vertical_alignment="center")
+
+    for i, (name, path) in enumerate(PAGES):
+        is_current = (path == current_path)
+
+        if is_current:
+            # Current page: show a non-clickable, clearly marked pill.
+            nav_cols[i].markdown(
+                f"<div style='padding:0.45rem 0.6rem;border-radius:999px;"
+                f"border:1px solid rgba(49,51,63,0.25);background:rgba(49,51,63,0.08);"
+                f"text-align:center;font-weight:600;'>✅ {name}</div>",
+                unsafe_allow_html=True,
+            )
+        else:
+            if nav_cols[i].button(name, use_container_width=True, key=f"nav_{current_path}_{path}"):
+                st.switch_page(path)
+
+    # Right-side status
+    with nav_cols[-1]:
+        parts = []
+        fn = st.session_state.get("uploaded_filename")
+        if fn:
+            parts.append(f"📄 {fn}")
+        ds = st.session_state.get("dataset_id")
+        ver = st.session_state.get("version_id")
+        if ds and ver:
+            parts.append(f"🗂️ {ds}/{ver}")
+        if parts:
+            st.markdown(
+                "<div style='padding:0.35rem 0.6rem;border-radius:10px;"
+                "border:1px solid rgba(49,51,63,0.18);background:rgba(49,51,63,0.04);"
+                "text-align:right;font-size:0.85rem;'>"
+                + " • ".join(parts)
+                + "</div>",
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                "<div style='text-align:right;color:rgba(49,51,63,0.6);font-size:0.85rem;'>No dataset loaded</div>",
+                unsafe_allow_html=True,
+            )
+
+    if title:
+        st.caption(title)
+
+    st.divider()
 
 # DB path (local to project by default; can override via env var)
 ROOT = os.path.dirname(os.path.dirname(__file__))  # FuSaTool/
@@ -369,6 +444,9 @@ def upsert_ir_slots(req_id: str, slots: List[Dict[str, Any]]) -> None:
 
 st.set_page_config(page_title="Data Import", layout="wide")
 
+render_top_nav("pages/0_Data_import.py", title="Data Import")
+
+
 # Title placeholder at the original position (top)
 _title = st.empty()
 
@@ -381,15 +459,35 @@ st.session_state["db_path"] = os.path.abspath(DB_PATH)
 
 init_db()
 
+# Persistent upload state across page navigation
+if "uploaded_payload" not in st.session_state:
+    st.session_state["uploaded_payload"] = None
+if "uploaded_filename" not in st.session_state:
+    st.session_state["uploaded_filename"] = None
+if "uploaded_bytes" not in st.session_state:
+    st.session_state["uploaded_bytes"] = None
+if "uploaded_at" not in st.session_state:
+    st.session_state["uploaded_at"] = None
+
 # Nonce to reset the file_uploader widget when clearing loaded JSON
 if "uploader_nonce" not in st.session_state:
     st.session_state["uploader_nonce"] = 0
 
-uploaded = st.file_uploader(
-    "FuSa requirements JSON 선택",
-    type=["json"],
-    key=f"fusa_json_uploader_{st.session_state['uploader_nonce']}",
-)
+# If a JSON is already loaded, keep it across navigation.
+# Streamlit's file_uploader cannot re-show a previously selected file, so we display the loaded filename.
+if st.session_state.get("uploaded_payload") is not None and st.session_state.get("uploaded_filename"):
+    st.success(
+        f"현재 로드된 JSON: {st.session_state['uploaded_filename']} (세션 유지)"
+        + (f" • loaded_at={st.session_state.get('uploaded_at')}" if st.session_state.get("uploaded_at") else "")
+    )
+
+with st.expander("JSON 업로드/교체", expanded=(st.session_state.get("uploaded_payload") is None)):
+    uploaded = st.file_uploader(
+        "FuSa requirements JSON 선택",
+        type=["json"],
+        key=f"fusa_json_uploader_{st.session_state['uploader_nonce']}",
+        help="이미 로드된 JSON은 세션에 유지됩니다. 새 파일을 업로드하면 기존 로드된 JSON을 대체합니다.",
+    )
 
 
 # Update title after upload
@@ -404,6 +502,8 @@ if st.button("Clear loaded JSON", help="업로드/파싱된 JSON을 세션에서
     for k in [
         "uploaded_filename",
         "uploaded_payload",
+        "uploaded_bytes",
+        "uploaded_at",
         "jsonc_stripped",
         "dataset_id",
         "version_id",
@@ -485,6 +585,8 @@ def _strip_json_comments(text: str) -> str:
 if uploaded is not None:
     try:
         _raw_bytes = uploaded.getvalue()
+        st.session_state["uploaded_bytes"] = _raw_bytes
+        st.session_state["uploaded_at"] = datetime.utcnow().isoformat()
         _text = _raw_bytes.decode("utf-8")
 
         try:
@@ -513,6 +615,8 @@ else:
     payload = st.session_state.get("uploaded_payload")
     if payload is not None:
         st.caption("업로드된 JSON을 세션 캐시에서 재사용 중입니다. (다른 페이지로 이동 후 돌아와도 유지됩니다.)")
+        if st.session_state.get("uploaded_bytes"):
+            st.caption(f"cached_size={len(st.session_state['uploaded_bytes'])} bytes")
 
 # ---------- 1) Detect schema ----------
 is_fusareq = isinstance(payload, dict) and "dataset_info" in payload and "requirements" in payload
@@ -766,6 +870,10 @@ if st.button(
 
         st.success("완료되었습니다." if not dry_run else "Dry-run 완료(쓰기 없음).")
 
+        # Auto-navigate to Overview on successful commit
+        if not dry_run:
+            st.switch_page("pages/1_Overview.py")
+
         if not dry_run:
             conn = _conn()
             cur = conn.cursor()
@@ -786,9 +894,6 @@ if st.button(
                 "requirements_scope": scope_cnt,
                 "ir_slots": slots_cnt,
             })
-
-            if st.button("Go to Overview", type="secondary"):
-                st.switch_page("pages/1_Overview.py")
 
         st.caption("다음: Overview에서 차종×ECU 히트맵을 그리거나 Explorer에서 (차종/ECU)로 필터링하세요.")
 

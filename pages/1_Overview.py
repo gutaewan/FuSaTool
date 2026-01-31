@@ -2,7 +2,82 @@ import os
 import sqlite3
 from typing import Dict, Tuple, List
 
+
 import streamlit as st
+
+# ------------------------- Top navigation (horizontal) -------------------------
+PAGES = [
+    ("📥 Data Import", "pages/0_Data_import.py"),
+    ("🗺️ Overview", "pages/1_Overview.py"),
+    ("📚 Explorer", "pages/2_Requirements_Explorer.py"),
+    ("🔎 Detail", "pages/3_Requirement_Detail.py"),
+]
+
+def _hide_sidebar_css() -> None:
+    """Hide Streamlit's default left multipage navigation."""
+    st.markdown(
+        """
+        <style>
+        [data-testid="stSidebar"] { display: none !important; }
+        [data-testid="stSidebarNav"] { display: none !important; }
+        section.main { padding-left: 1rem !important; }
+        .block-container { padding-top: 2.3rem; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+def render_top_nav(current_path: str, title: str = "") -> None:
+    """Render a top horizontal navigation bar for page navigation."""
+    _hide_sidebar_css()
+
+    # Slightly more intuitive nav: icons + clear current page + a right-side status badge.
+    nav_cols = st.columns([1] * len(PAGES) + [1.8], vertical_alignment="center")
+
+    for i, (name, path) in enumerate(PAGES):
+        is_current = (path == current_path)
+
+        if is_current:
+            # Current page: show a non-clickable, clearly marked pill.
+            nav_cols[i].markdown(
+                f"<div style='padding:0.45rem 0.6rem;border-radius:999px;"
+                f"border:1px solid rgba(49,51,63,0.25);background:rgba(49,51,63,0.08);"
+                f"text-align:center;font-weight:600;'>✅ {name}</div>",
+                unsafe_allow_html=True,
+            )
+        else:
+            if nav_cols[i].button(name, use_container_width=True, key=f"nav_{current_path}_{path}"):
+                st.switch_page(path)
+
+    # Right-side status
+    with nav_cols[-1]:
+        parts = []
+        fn = st.session_state.get("uploaded_filename")
+        if fn:
+            parts.append(f"📄 {fn}")
+        ds = st.session_state.get("dataset_id")
+        ver = st.session_state.get("version_id")
+        if ds and ver:
+            parts.append(f"🗂️ {ds}/{ver}")
+        if parts:
+            st.markdown(
+                "<div style='padding:0.35rem 0.6rem;border-radius:10px;"
+                "border:1px solid rgba(49,51,63,0.18);background:rgba(49,51,63,0.04);"
+                "text-align:right;font-size:0.85rem;'>"
+                + " • ".join(parts)
+                + "</div>",
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                "<div style='text-align:right;color:rgba(49,51,63,0.6);font-size:0.85rem;'>No dataset loaded</div>",
+                unsafe_allow_html=True,
+            )
+
+    if title:
+        st.caption(title)
+
+    st.divider()
 
 # ---- DB ----
 ROOT = os.path.dirname(os.path.dirname(__file__))  # FuSaTool/
@@ -24,6 +99,9 @@ def fetch_all(sql: str, params=()):
 
 # ---- Page ----
 st.set_page_config(page_title="Overview", layout="wide")
+
+render_top_nav("pages/1_Overview.py", "Overview")
+
 st.title("Overview")
 st.caption(f"DB: {DB_PATH}")
 # Keep DB path in session so other pages stay consistent
@@ -99,24 +177,69 @@ if not vehicle_models or not ecus:
     )
     st.stop()
 
+# ---- Persisted filter state (survive page navigation) ----
+# Initialize defaults once per session, and keep them valid when catalogs change.
+if "ov_vm_sel" not in st.session_state:
+    st.session_state["ov_vm_sel"] = list(vehicle_models)
+if "ov_ecu_sel" not in st.session_state:
+    st.session_state["ov_ecu_sel"] = list(ecus)
+if "ov_metric" not in st.session_state:
+    st.session_state["ov_metric"] = "#Requirements"
+
+# Sanitize stored selections against current catalogs
+st.session_state["ov_vm_sel"] = [x for x in st.session_state["ov_vm_sel"] if x in vehicle_models]
+st.session_state["ov_ecu_sel"] = [x for x in st.session_state["ov_ecu_sel"] if x in ecus]
+if not st.session_state["ov_vm_sel"]:
+    st.session_state["ov_vm_sel"] = list(vehicle_models)
+if not st.session_state["ov_ecu_sel"]:
+    st.session_state["ov_ecu_sel"] = list(ecus)
+
+# Fallback drill-down selection (single VM/ECU)
+if "ov_fallback_vm" not in st.session_state:
+    st.session_state["ov_fallback_vm"] = st.session_state["ov_vm_sel"][0]
+if "ov_fallback_ecu" not in st.session_state:
+    st.session_state["ov_fallback_ecu"] = st.session_state["ov_ecu_sel"][0]
+
 # ---- Layout ----
 left, right = st.columns([1, 3], gap="large")
 
 with left:
     st.subheader("Filters")
-    vm_sel = st.multiselect("차종(vehicle model)", vehicle_models, default=vehicle_models)
-    ecu_sel = st.multiselect("ECU", ecus, default=ecus)
+    vm_sel = st.multiselect(
+        "차종(vehicle model)",
+        vehicle_models,
+        default=st.session_state["ov_vm_sel"],
+        key="ov_vm_sel",
+    )
+    ecu_sel = st.multiselect(
+        "ECU",
+        ecus,
+        default=st.session_state["ov_ecu_sel"],
+        key="ov_ecu_sel",
+    )
 
     metric = st.radio(
         "셀 값(metric)",
         ["#Requirements", "#UnknownSlots", "UnknownSlots per Requirement"],
-        index=0,
+        index=["#Requirements", "#UnknownSlots", "UnknownSlots per Requirement"].index(st.session_state.get("ov_metric", "#Requirements"))
+        if st.session_state.get("ov_metric") in ["#Requirements", "#UnknownSlots", "UnknownSlots per Requirement"]
+        else 0,
+        key="ov_metric",
     )
 
     st.divider()
     st.write("Drill-down (fallback)")
-    fallback_vm = st.selectbox("차종 선택", vm_sel if vm_sel else vehicle_models)
-    fallback_ecu = st.selectbox("ECU 선택", ecu_sel if ecu_sel else ecus)
+    fb_vm_options = vm_sel if vm_sel else vehicle_models
+    fb_ecu_options = ecu_sel if ecu_sel else ecus
+
+    # Keep stored fallback selections valid
+    if st.session_state.get("ov_fallback_vm") not in fb_vm_options:
+        st.session_state["ov_fallback_vm"] = fb_vm_options[0]
+    if st.session_state.get("ov_fallback_ecu") not in fb_ecu_options:
+        st.session_state["ov_fallback_ecu"] = fb_ecu_options[0]
+
+    fallback_vm = st.selectbox("차종 선택", fb_vm_options, key="ov_fallback_vm")
+    fallback_ecu = st.selectbox("ECU 선택", fb_ecu_options, key="ov_fallback_ecu")
 
     if not is_applicable(fallback_vm, fallback_ecu):
         st.info("선택한 (차종, ECU) 조합은 비적용(NA)입니다.")
@@ -226,18 +349,39 @@ with right:
             v = cell_value(vm, ecu)
             nreq = req_map.get((vm, ecu), 0)
 
+            # Clickable-grid style level dots (based on normalized value)
+            level = 0
+            if vmax > 0 and applicable and nreq > 0:
+                ratio = v / vmax
+                if ratio > 0.66:
+                    level = 3
+                elif ratio > 0.33:
+                    level = 2
+                elif ratio > 0:
+                    level = 1
+
+            dot = "○"
+            if level == 1:
+                dot = "◔"
+            if level == 2:
+                dot = "◑"
+            if level == 3:
+                dot = "●"
+
             if not applicable:
                 label = "NA"
                 bg = "#f2f2f2"
+                cell_text = label
             else:
                 label = "-" if nreq == 0 else (
                     f"{v:.2f}" if metric == "UnknownSlots per Requirement" else f"{int(v)}"
                 )
                 bg = "#ffffff" if nreq == 0 else shade(v)
+                cell_text = f"{dot} {label}" if nreq > 0 else label
 
             html.append(
                 "<td style='border:1px solid #eee; padding:6px; text-align:center; background:" + bg + ";'>"
-                + label
+                + cell_text
                 + "</td>"
             )
 
@@ -245,77 +389,15 @@ with right:
 
     html.append("</table></div>")
 
+    # Render HTML heatmap
+    st.markdown("".join(html), unsafe_allow_html=True)
+
     if len(vm_axis) > MAX_HTML_VMS or len(ecu_axis) > MAX_HTML_ECUS:
         st.caption(
             f"히트맵은 성능을 위해 일부만 표시합니다. (VM {len(vm_h)}/{len(vm_axis)}, ECU {len(ecu_h)}/{len(ecu_axis)})"
         )
 
-    st.markdown("\n".join(html), unsafe_allow_html=True)
-    st.caption("위 히트맵은 시각적 개요용입니다. 아래 Clickable Grid(또는 좌측 fallback)를 사용해 드릴다운하세요.")
-
-    # 2) clickable grid (practical limit)
-    MAX_VMS = 20
-    MAX_ECUS = 30
-    too_big = len(vm_axis) > MAX_VMS or len(ecu_axis) > MAX_ECUS
-
-    if too_big:
-        st.info(
-            f"축이 큽니다(VM={len(vm_axis)}, ECU={len(ecu_axis)}). 버튼 그리드는 좌측 fallback 드릴다운을 사용하세요."
-        )
-    else:
-        flat2 = [v for row in matrix for v in row]
-        vmax2 = max(flat2) if flat2 else 0.0
-
-        st.markdown("### Clickable Grid")
-        st.caption("각 셀 버튼을 누르면 해당 (차종, ECU) 요구사항 목록으로 이동합니다. NA는 비활성화됩니다.")
-
-        header_cols = st.columns([2] + [1] * len(vm_axis))
-        header_cols[0].markdown("**ECU \\ VM**")
-        for j, vm in enumerate(vm_axis):
-            header_cols[j + 1].markdown(f"**{vm}**")
-
-        for i, ecu in enumerate(ecu_axis):
-            cols = st.columns([2] + [1] * len(vm_axis))
-            cols[0].markdown(f"**{ecu}**")
-
-            for j, vm in enumerate(vm_axis):
-                val = matrix[i][j]
-                nreq = req_map.get((vm, ecu), 0)
-                applicable = is_applicable(vm, ecu)
-
-                level = 0
-                if vmax2 > 0:
-                    ratio = val / vmax2
-                    if ratio > 0.66:
-                        level = 3
-                    elif ratio > 0.33:
-                        level = 2
-                    elif ratio > 0:
-                        level = 1
-
-                if not applicable:
-                    label = "NA"
-                else:
-                    label = "-" if nreq == 0 else (
-                        f"{val:.2f}" if metric == "UnknownSlots per Requirement" else f"{int(val)}"
-                    )
-
-                dot = "○"
-                if level == 1:
-                    dot = "◔"
-                if level == 2:
-                    dot = "◑"
-                if level == 3:
-                    dot = "●"
-
-                if cols[j + 1].button(
-                    f"{dot} {label}",
-                    key=f"cell_{ecu}_{vm}",
-                    disabled=(not applicable),
-                ):
-                    st.session_state["selected_vehicle_model_id"] = vm
-                    st.session_state["selected_ecu_id"] = ecu
-                    st.switch_page("pages/2_Requirements_Explorer.py")
+    st.caption("히트맵 셀 표기: ○/◔/◑/● 는 상대적 크기(정규화 값) 구간을 나타냅니다. 드릴다운은 아래 Hotspots 또는 좌측 fallback을 사용하세요.")
 
     st.divider()
 
