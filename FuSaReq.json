@@ -6,9 +6,6 @@
     "policy_profile_id": "ISO-26262-ASIL-D"
   },
   "requirements": [
-    /* =========================================
-       1. VCU (Vehicle Control Unit)
-       ========================================= */
     {
       "req_id": "REQ-VCU-01",
       "meta": { "source": "Common", "component": "VCU", "goal": "SG-POW-01" },
@@ -91,10 +88,6 @@
         "unknown_fields": ["constraints", "verification_method"]
       }
     },
-
-    /* =========================================
-       2. BMS (Battery Management System)
-       ========================================= */
     {
       "req_id": "REQ-BMS-01",
       "meta": { "source": "Common", "component": "BMS", "goal": "SG-BAT-01" },
@@ -163,10 +156,6 @@
         "unknown_fields": ["verification_method"]
       }
     },
-
-    /* =========================================
-       3. Inverter/MCU (Motor Control Unit)
-       ========================================= */
     {
       "req_id": "REQ-MCU-01",
       "meta": { "source": "CarA-EV", "component": "Inverter", "goal": "SG-POW-01" },
@@ -235,10 +224,6 @@
         "unknown_fields": []
       }
     },
-
-    /* =========================================
-       4. ADAS (Advanced Driver Assistance System)
-       ========================================= */
     {
       "req_id": "REQ-ADA-01",
       "meta": { "source": "CarA-EV", "component": "Lidar", "goal": "SG-ADA-01" },
@@ -317,10 +302,6 @@
         "unknown_fields": ["constraints"]
       }
     },
-
-    /* =========================================
-       5. ESP (Electronic Stability Program)
-       ========================================= */
     {
       "req_id": "REQ-ESP-01",
       "meta": { "source": "Common", "component": "ESP", "goal": "SG-CHA-01" },
