@@ -1,0 +1,112 @@
+{
+  "dataset_info": {
+    "dataset_id": "FUSA-BATCH-002",
+    "version_id": "v0.2.0",
+    "policy_profile_id": "ISO-26262-ASIL-D-STRICT"
+  },
+  "requirements": [
+    {
+      "req_id": "REQ-VCU-COMMON-01",
+      "raw_text": "가속 페달 센서(APS) 신호 불일치 발생 시, 시스템은 즉시 안전 상태(Torque 0)로 진입해야 함. (FTTI: 100ms)",
+      "meta": {
+        "source": "CarA/B/C Common",
+        "domain": "Powertrain",
+        "component": "VCU",
+        "goal": "SG-POW-01: 의도하지 않은 가속 방지"
+      },
+      "ir_record": {
+        "standard_granularity_level": "L2",
+        "slots": [
+          { "slot_name": "intent", "value": "운전자 의지 외 가속 차단", "status": "CONFIRMED" },
+          { "slot_name": "goal", "value": "SG-POW-01", "status": "CONFIRMED" },
+          { "slot_name": "action_statement", "value": "Torque 0Nm 출력", "status": "CONFIRMED" },
+          { "slot_name": "trigger_condition", "value": "APS Channel A/B mismatch > 5%", "status": "CONFIRMED" },
+          { "slot_name": "constraints", "value": "FTTI 100ms", "status": "CONFIRMED" }
+        ],
+        "unknown_fields": ["testability", "acceptance_criteria"]
+      }
+    },
+    {
+      "req_id": "REQ-BMS-COMMON-02",
+      "raw_text": "배터리 과충전 감지 시 릴레이 오픈.",
+      "meta": {
+        "source": "CarA/B/C Common",
+        "domain": "Battery",
+        "component": "BMS",
+        "goal": "SG-BAT-01: 배터리 화재 예방"
+      },
+      "ir_record": {
+        "standard_granularity_level": "L1 (Very Low)",
+        "slots": [
+          { "slot_name": "goal", "value": "SG-BAT-01", "status": "CONFIRMED" },
+          { "slot_name": "action_statement", "value": "Main Relay Open", "status": "CONFIRMED" }
+        ],
+        "unknown_fields": ["intent", "trigger_condition", "constraints", "testability"],
+        "residual": [
+          { "type": "warning", "value": "Safety State is needed", "anchor": { "quote": "릴레이 오픈" } }
+        ]
+      }
+    },
+    {
+      "req_id": "REQ-ADAS-A-03",
+      "raw_text": "Car A(Sedan)의 Lidar 센서 차단 시, 500ms 내에 차선 유지 보조 기능을 중단하고 클러스터에 경고등을 점등해야 한다. 안전 상태는 기능 비활성화이다.",
+      "meta": {
+        "source": "CarA Specific",
+        "domain": "ADAS",
+        "component": "Lidar_Module",
+        "goal": "SG-ADA-05: 잘못된 조향 제어 방지"
+      },
+      "ir_record": {
+        "standard_granularity_level": "L3 (Detailed)",
+        "slots": [
+          { "slot_name": "intent", "value": "센서 신뢰성 상실 시 제어권 반환", "status": "CONFIRMED" },
+          { "slot_name": "action_statement", "value": "LKA Disable & Warning Lamp ON", "status": "CONFIRMED" },
+          { "slot_name": "trigger_condition", "value": "Lidar Object Detection Error", "status": "CONFIRMED" },
+          { "slot_name": "constraints", "value": "FTTI 500ms", "status": "CONFIRMED" },
+          { "slot_name": "acceptance_criteria", "value": "Steering Torque < 0.1Nm", "status": "CONFIRMED" },
+          { "slot_name": "testability", "value": "Hardware-in-the-loop Simulation", "status": "CONFIRMED" }
+        ],
+        "unknown_fields": ["assumption"]
+      }
+    },
+    {
+      "req_id": "REQ-ESP-B-04",
+      "raw_text": "Car B(SUV) 전용 ESP는 횡전(Rollover) 위험 감지 시 각 휠에 독립적인 제동력을 가한다.",
+      "meta": {
+        "source": "CarB Specific",
+        "domain": "Chassis",
+        "component": "ESP",
+        "goal": "SG-CHA-02: 전복 사고 방지"
+      },
+      "ir_record": {
+        "standard_granularity_level": "L1",
+        "slots": [
+          { "slot_name": "goal", "value": "SG-CHA-02", "status": "CONFIRMED" },
+          { "slot_name": "action_statement", "value": "Individual Wheel Braking", "status": "CONFIRMED" }
+        ],
+        "unknown_fields": ["constraints", "trigger_condition", "testability"]
+      }
+    },
+    {
+      "req_id": "REQ-MCU-C-05",
+      "raw_text": "Car C(Truck) 대형 모터 컨트롤러는 인버터 상하단 암(Arm) 단락 감지 시 즉시 전원을 차단(Active Short Circuit)해야 하며, FTTI는 대용량 모터 특성을 고려하여 20ms로 제한한다.",
+      "meta": {
+        "source": "CarC Specific",
+        "domain": "Powertrain",
+        "component": "MCU",
+        "goal": "SG-POW-01: 의도하지 않은 가속 방지"
+      },
+      "ir_record": {
+        "standard_granularity_level": "L3",
+        "slots": [
+          { "slot_name": "goal", "value": "SG-POW-01", "status": "CONFIRMED" },
+          { "slot_name": "action_statement", "value": "Active Short Circuit (ASC)", "status": "CONFIRMED" },
+          { "slot_name": "trigger_condition", "value": "IGBT Short Circuit Detection", "status": "CONFIRMED" },
+          { "slot_name": "constraints", "value": "FTTI 20ms", "status": "CONFIRMED" },
+          { "slot_name": "how_type", "value": "Hardware Protection Circuit", "status": "CONFIRMED" }
+        ],
+        "unknown_fields": ["testability", "acceptance_criteria"]
+      }
+    }
+  ]
+}
