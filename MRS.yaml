@@ -1,0 +1,545 @@
+mrs_schema:
+  version: "1.0"
+  slots:
+    - Why
+    - Anchor
+    - What
+    - HowType
+    - When
+    - Constraints
+    - Verification
+    - AcceptanceCriteria
+
+  slot_states:
+    - OK
+    - WEAK
+    - VAGUE
+    - ABSENT
+
+  missing_definition:
+    missing_if_state_in: [ABSENT, VAGUE]
+
+  anchor_concepts:
+    context_anchor_slot: "Anchor"   # 대상/맥락 entity anchor
+    evidence_anchor_field: "anchors" # raw text span pointers (evidence)
+
+# -------------------------------------------------------------------
+# 1) MRS-only type system (deterministic)
+# -------------------------------------------------------------------
+mrs_only_types:
+  type_order:  # for deterministic tie-breaking (first match wins)
+    - T6_VerificationCentric
+    - T5_ConstraintCentric
+    - T4_WhenCentric
+    - T3_HowTypeCentric
+    - T2_WhatCentric
+    - T1_WhyCentric
+
+  types:
+    T1_WhyCentric:
+      description: "Why is strong but Anchor/What is weak or absent"
+      match:
+        all:
+          - slot: Why
+            state_in: [OK]
+        any:
+          - slot: Anchor
+            state_in: [WEAK, VAGUE, ABSENT]
+          - slot: What
+            state_in: [WEAK, VAGUE, ABSENT]
+
+    T2_WhatCentric:
+      description: "Anchor and What are strong; others may be missing"
+      match:
+        all:
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK]
+
+    T3_HowTypeCentric:
+      description: "HowType is explicitly present (e.g., detect/mitigate/transition/warn/redundancy)"
+      match:
+        all:
+          - slot: HowType
+            state_in: [OK]
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK]
+
+    T4_WhenCentric:
+      description: "When is strong and drives the requirement statement"
+      match:
+        all:
+          - slot: When
+            state_in: [OK]
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK]
+
+    T5_ConstraintCentric:
+      description: "Constraints is strong (timing/FTTI/performance/mode/range)"
+      match:
+        all:
+          - slot: Constraints
+            state_in: [OK]
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK]
+
+    T6_VerificationCentric:
+      description: "Verification and AcceptanceCriteria are explicit and central"
+      match:
+        all:
+          - slot: Verification
+            state_in: [OK]
+          - slot: AcceptanceCriteria
+            state_in: [OK]
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK]
+
+# -------------------------------------------------------------------
+# 1b) Type × slot expectations (M/R/O)
+# -------------------------------------------------------------------
+type_slot_expectations:
+  legend:
+    M: "Mandatory (required)"
+    R: "Recommended (expected but can be deferred)"
+    O: "Optional"
+
+  matrix:
+    T1_WhyCentric:
+      Why: M
+      Anchor: R
+      What: R
+      HowType: O
+      When: O
+      Constraints: O
+      Verification: O
+      AcceptanceCriteria: O
+
+    T2_WhatCentric:
+      Why: R
+      Anchor: M
+      What: M
+      HowType: R
+      When: M
+      Constraints: R
+      Verification: R
+      AcceptanceCriteria: O
+
+    T3_HowTypeCentric:
+      Why: R
+      Anchor: M
+      What: M
+      HowType: M
+      When: M
+      Constraints: R
+      Verification: R
+      AcceptanceCriteria: O
+
+    T4_WhenCentric:
+      Why: R
+      Anchor: M
+      What: M
+      HowType: R
+      When: M
+      Constraints: R
+      Verification: R
+      AcceptanceCriteria: O
+
+    T5_ConstraintCentric:
+      Why: R
+      Anchor: M
+      What: M
+      HowType: R
+      When: R
+      Constraints: M
+      Verification: R
+      AcceptanceCriteria: O
+
+    T6_VerificationCentric:
+      Why: R
+      Anchor: M
+      What: M
+      HowType: O
+      When: R
+      Constraints: R
+      Verification: M
+      AcceptanceCriteria: M
+
+# -------------------------------------------------------------------
+# 2) Missingness labeling engine
+# -------------------------------------------------------------------
+missingness_engine:
+  labels:
+    - ActionableMissing
+    - PermissibleMissing
+    - DeferredMissing
+
+  # Deterministic application order:
+  # (1) derive type
+  # (2) initialize candidate label from expectations
+  # (3) apply anchor-driven requiredness overrides
+  # (4) apply relation-based permissible upgrades
+  # (5) apply requires-based actionable confirmations
+  # (6) apply deferred justification rules (evidence gating etc.)
+  #
+  rule_application_stages:
+    - stage: S_SeverityCandidates
+      description: "Initialize candidate label from type-slot expectations (M/R/O)."
+    - stage: A_AnchorDriven
+      description: "Anchor-driven requiredness (refinement flow) overrides."
+    - stage: P_Permissible
+      description: "Relation-based permissible rules (enables/substitutes)."
+    - stage: A_Actionable
+      description: "Requires violations and hard actionable confirmations."
+    - stage: D_Deferred
+      description: "Deferred justification (anchor-first refinement, evidence gating)."
+
+  # Slot relations (conceptual; used as documentation & optional checks)
+  slot_relations:
+    - relation: requires
+      from: What
+      to: When
+    - relation: enables
+      from: What
+      to: HowType
+    - relation: enables
+      from: When
+      to: Verification
+    - relation: enables
+      from: Constraints
+      to: Verification
+    - relation: enables
+      from: Verification
+      to: AcceptanceCriteria
+    - relation: substitutes
+      from: Verification
+      to: AcceptanceCriteria
+      note: "conditional"
+    - relation: substitutes
+      from: Constraints
+      to: AcceptanceCriteria
+      note: "conditional"
+    - relation: consistency
+      between: [What, When]
+    - relation: consistency
+      between: [What, Constraints]
+    - relation: consistency
+      between: [When, Constraints]
+    - relation: consistency
+      between: [Verification, AcceptanceCriteria]
+
+  # Rules
+  rules:
+    # --------------------------
+    # Stage: S_SeverityCandidates
+    # --------------------------
+    - id: S-M1
+      stage: S_SeverityCandidates
+      priority: 10
+      description: "Mandatory slot missing => Actionable candidate"
+      when:
+        all:
+          - expectation: M
+          - slot_missing: true
+      then:
+        label: ActionableMissing
+        rationale: "Mandatory slot is missing for this type."
+
+    - id: S-R1
+      stage: S_SeverityCandidates
+      priority: 20
+      description: "Recommended slot missing => Deferred candidate"
+      when:
+        all:
+          - expectation: R
+          - slot_missing: true
+      then:
+        label: DeferredMissing
+        rationale: "Recommended slot missing; may be deferred at this refinement stage."
+
+    - id: S-O1
+      stage: S_SeverityCandidates
+      priority: 30
+      description: "Optional slot missing => Permissible candidate"
+      when:
+        all:
+          - expectation: O
+          - slot_missing: true
+      then:
+        label: PermissibleMissing
+        rationale: "Optional slot missing; generally permissible unless overridden."
+
+    # --------------------------
+    # Stage: A_AnchorDriven
+    # --------------------------
+    - id: A-ANC0
+      stage: A_AnchorDriven
+      priority: 10
+      description: "If context Anchor is WEAK/ABSENT, downstream slots missing => Deferred (anchor-first refinement)"
+      when:
+        all:
+          - slot: Anchor
+            state_in: [WEAK, VAGUE, ABSENT]
+          - any:
+              - slot: When
+                missing: true
+              - slot: Constraints
+                missing: true
+              - slot: Verification
+                missing: true
+              - slot: AcceptanceCriteria
+                missing: true
+      then:
+        label: DeferredMissing
+        applies_to_slots: [When, Constraints, Verification, AcceptanceCriteria]
+        rationale: "Anchor is not firm; enforce anchor-first refinement before downstream slots."
+
+    - id: A-ANC1
+      stage: A_AnchorDriven
+      priority: 20
+      description: "If Anchor_OK and What missing => Actionable"
+      when:
+        all:
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            missing: true
+      then:
+        label: ActionableMissing
+        applies_to_slots: [What]
+        rationale: "With a firm anchor, 'What' is required for executability."
+
+    - id: A-ANC2
+      stage: A_AnchorDriven
+      priority: 30
+      description: "If Anchor_OK and What exists, When missing => Actionable"
+      when:
+        all:
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK, WEAK]
+          - slot: When
+            missing: true
+      then:
+        label: ActionableMissing
+        applies_to_slots: [When]
+        rationale: "What requires When under a firm anchor; missing When breaks applicability."
+
+    # --------------------------
+    # Stage: P_Permissible
+    # --------------------------
+    - id: P-AC1
+      stage: P_Permissible
+      priority: 10
+      description: "AC missing can be permissible if Verification is anchored and context is sufficient"
+      when:
+        all:
+          - slot: AcceptanceCriteria
+            missing: true
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK]
+          - slot: Verification
+            state_in: [OK]
+          - any:
+              - slot: When
+                state_in: [OK]
+              - slot: Constraints
+                state_in: [OK]
+      then:
+        label: PermissibleMissing
+        applies_to_slots: [AcceptanceCriteria]
+        rationale: "Verification enables AC; sufficient anchored context allows deferring AC."
+
+    - id: P-VV1
+      stage: P_Permissible
+      priority: 20
+      description: "Verification missing can be permissible if requirement is already test-closed (When+Constraints+AC)"
+      when:
+        all:
+          - slot: Verification
+            missing: true
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK]
+          - slot: When
+            state_in: [OK]
+          - slot: Constraints
+            state_in: [OK]
+          - any:
+              - slot: AcceptanceCriteria
+                state_in: [OK]
+              - constraints_judgable: true
+      then:
+        label: PermissibleMissing
+        applies_to_slots: [Verification]
+        rationale: "When/Constraints enable verification; if test closure exists, explicit method can be deferred."
+
+    - id: P-CN1
+      stage: P_Permissible
+      priority: 30
+      description: "Constraints missing is conservatively Deferred; can be Permissible only if policy allows"
+      when:
+        all:
+          - slot: Constraints
+            missing: true
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK]
+          - slot: When
+            state_in: [OK]
+          - slot: HowType
+            state_in: [OK]
+          - any:
+              - slot: Verification
+                state_in: [OK]
+              - slot: AcceptanceCriteria
+                state_in: [OK]
+      then:
+        label: DeferredMissing
+        applies_to_slots: [Constraints]
+        rationale: "Constraints are critical in safety contexts; default to Deferred unless policy explicitly permits."
+        policy_overrides:
+          if_policy_allows_constraints_permissible: PermissibleMissing
+
+    # --------------------------
+    # Stage: A_Actionable
+    # --------------------------
+    - id: A-WT1
+      stage: A_Actionable
+      priority: 10
+      description: "What missing is always actionable"
+      when:
+        all:
+          - slot: What
+            missing: true
+      then:
+        label: ActionableMissing
+        applies_to_slots: [What]
+        rationale: "What is the core requirement content."
+
+    - id: A-AN1
+      stage: A_Actionable
+      priority: 20
+      description: "For non-Why-centric types (T2~T6), Anchor missing is actionable"
+      when:
+        all:
+          - type_in: [T2_WhatCentric, T3_HowTypeCentric, T4_WhenCentric, T5_ConstraintCentric, T6_VerificationCentric]
+          - slot: Anchor
+            missing: true
+      then:
+        label: ActionableMissing
+        applies_to_slots: [Anchor]
+        rationale: "In refined types, a context anchor is required."
+
+    - id: A-WH1
+      stage: A_Actionable
+      priority: 30
+      description: "If Anchor_OK and What exists, When missing is actionable (requires)"
+      when:
+        all:
+          - slot: Anchor
+            state_in: [OK]
+          - slot: What
+            state_in: [OK, WEAK]
+          - slot: When
+            missing: true
+      then:
+        label: ActionableMissing
+        applies_to_slots: [When]
+        rationale: "Requires(What→When) under firm anchor."
+
+    # --------------------------
+    # Stage: D_Deferred
+    # --------------------------
+    - id: D-ANC1
+      stage: D_Deferred
+      priority: 10
+      description: "If Anchor is WEAK and many slots are missing, defer and prioritize anchor strengthening"
+      when:
+        all:
+          - slot: Anchor
+            state_in: [WEAK]
+          - missing_count_at_least: 2
+            among_slots: [When, Constraints, Verification, AcceptanceCriteria]
+      then:
+        label: DeferredMissing
+        applies_to_slots: [When, Constraints, Verification, AcceptanceCriteria]
+        rationale: "Anchor-first refinement: strengthen anchor before downstream slots."
+
+    - id: D-EV1
+      stage: D_Deferred
+      priority: 20
+      description: "Evidence gating: if a slot value exists but has no evidence anchors, downgrade to WEAK and defer related decisions"
+      when:
+        all:
+          - slot_value_present_but_unanchored: true
+      then:
+        action:
+          - downgrade_slot_state_to: WEAK
+        label: DeferredMissing
+        rationale: "Anchors-first: unanchored content is not confirmed; defer until evidence is attached."
+
+# -------------------------------------------------------------------
+# Optional policy flags for conservative behaviors
+# -------------------------------------------------------------------
+policies:
+  defaults:
+    allow_constraints_permissible: false
+  flags:
+    if_policy_allows_constraints_permissible: "allow_constraints_permissible"
+
+# -------------------------------------------------------------------
+# Consistency candidate rules (not a missingness label)
+# -------------------------------------------------------------------
+consistency_candidates:
+  description: "Generate inconsistency candidates across requirements grouped by the same Anchor."
+  group_key: Anchor
+  rules:
+    - id: K-CS1
+      description: "Same/Similar What but conflicting When within an Anchor group"
+      when:
+        all:
+          - within_same_anchor_group: true
+          - what_similarity_at_least: 0.8
+          - when_conflict: true
+      then:
+        candidate_type: "InconsistencyCandidate"
+        fields: [Anchor, What, When]
+        rationale: "consistency(What↔When) violated in anchor group (candidate, not verdict)."
+
+    - id: K-CS2
+      description: "Same/Similar What but conflicting Constraints within an Anchor group"
+      when:
+        all:
+          - within_same_anchor_group: true
+          - what_similarity_at_least: 0.8
+          - constraints_conflict: true
+      then:
+        candidate_type: "InconsistencyCandidate"
+        fields: [Anchor, What, Constraints]
+        rationale: "consistency(What↔Constraints) violated in anchor group (candidate, not verdict)."
+
+    - id: K-CS3
+      description: "Verification exists but AC is conflicting or systematically missing within an Anchor group"
+      when:
+        all:
+          - within_same_anchor_group: true
+          - verification_present: true
+          - acceptance_criteria_pattern_anomaly: true
+      then:
+        candidate_type: "InconsistencyCandidate"
+        fields: [Anchor, Verification, AcceptanceCriteria]
+        rationale: "consistency(Verification↔AC) anomaly in anchor group (candidate, not verdict)."
