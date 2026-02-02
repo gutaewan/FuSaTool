@@ -1,70 +1,100 @@
 import pandas as pd
 import random
 
-# 분석해야 할 IR Slot 정의
-IR_SLOTS = [
-    "Why", "What", "How type", "When", 
-    "Constraints", "Verification", "Acceptance criteria", "Anchors", "Goal"
-]
-
-# (테스트용) 가상의 차종 및 제어기 목록
-MOCK_VEHICLES = ["IONIQ5", "EV6", "GV60", "SantaFe_HEV"]
-MOCK_CONTROLLERS = ["VCU", "BMS", "MCU", "ICU", "ADAS"]
+IR_SLOTS = ["Why", "What", "How type", "When", "Constraints", "Verification", "Acceptance criteria", "Anchors", "Goal"]
 
 class RequirementClassifier:
     def __init__(self, use_llm=False):
         self.use_llm = use_llm
 
     def is_already_classified(self, req_data):
-        """데이터가 이미 IR Slot 키를 가지고 있는지 확인"""
-        if not isinstance(req_data, dict):
-            return False
-        keys = req_data.keys()
+        if not isinstance(req_data, dict): return False
         for slot in IR_SLOTS:
-            if slot in keys:
-                return True
+            if slot in req_data: return True
         return False
 
     def mock_llm_classify(self, text):
-        """Mock LLM: IR Slot 분류 + 메타데이터(차종/제어기) 생성"""
         result = {}
         for slot in IR_SLOTS:
-            # 70% 확률로 데이터 존재 시뮬레이션
-            result[slot] = f"Content for {slot}" if random.random() > 0.3 else None
-        
+            result[slot] = f"Content" if random.random() > 0.3 else None
         result["original_text"] = text
         return result
 
+    def _ensure_list(self, value):
+        if value is None: return []
+        if isinstance(value, list): return value
+        return [str(value)]
+
+    def _deep_search(self, data, target_keys):
+        if not isinstance(data, dict): return None
+        target_keys_lower = {k.lower() for k in target_keys}
+        
+        # 1. 현재 레벨
+        for k, v in data.items():
+            if k.lower() in target_keys_lower:
+                if v is not None and v != "": return v
+        
+        # 2. 하위 레벨
+        for k, v in data.items():
+            if isinstance(v, dict):
+                found = self._deep_search(v, target_keys)
+                if found: return found
+            elif isinstance(v, list):
+                for item in v:
+                    if isinstance(item, dict):
+                        found = self._deep_search(item, target_keys)
+                        if found: return found
+        return None
+
     def analyze_list(self, requirements_list):
-        """리스트 전체 분석 및 메타데이터 보정"""
         analyzed_results = []
         
         for req in requirements_list:
             processed_req = {}
-            
-            # 1. IR Slot 분석 (기존 로직 유지)
-            if self.is_already_classified(req):
+            if isinstance(req, dict):
                 processed_req = req.copy()
-                for slot in IR_SLOTS:
-                    if slot not in processed_req:
-                        processed_req[slot] = None
-            elif self.use_llm:
-                text = req if isinstance(req, str) else str(req)
-                processed_req = self.mock_llm_classify(text)
             else:
-                processed_req = {slot: None for slot in IR_SLOTS}
-                processed_req["original_text"] = str(req)
+                processed_req = {"original_text": str(req)}
 
-            # 2. [추가] 차종(Vehicle) 및 제어기(Controller) 필드 확인 및 보정
-            # 실제 데이터에 없으면 테스트를 위해 랜덤 할당 (실전에서는 'Unknown' 처리 추천)
-            if "Vehicle" not in processed_req:
-                processed_req["Vehicle"] = random.choice(MOCK_VEHICLES)
-            if "Controller" not in processed_req:
-                processed_req["Controller"] = random.choice(MOCK_CONTROLLERS)
-            
-            # 3. ID 부여 (식별용)
-            if "ID" not in processed_req:
-                processed_req["ID"] = f"REQ-{random.randint(1000, 9999)}"
+            # IR Slot (기존 로직)
+            if self.use_llm and not self.is_already_classified(req):
+                text = req.get("text", str(req)) if isinstance(req, dict) else str(req)
+                processed_req.update(self.mock_llm_classify(text))
+            else:
+                for slot in IR_SLOTS:
+                    if slot not in processed_req: processed_req[slot] = None
+
+            # ----------------------------------------------------------
+            # 1. 차종 (Vehicle)
+            # ----------------------------------------------------------
+            raw_v = None
+            if "meta" in processed_req and isinstance(processed_req["meta"], dict):
+                raw_v = processed_req["meta"].get("vehicle_models")
+            if not raw_v:
+                raw_v = self._deep_search(processed_req, ["vehicle_models", "vehicle_model", "vehicle"])
+            processed_req["Vehicle"] = self._ensure_list(raw_v)
+            if not processed_req["Vehicle"]: processed_req["Vehicle"] = ["Unknown"]
+
+            # ----------------------------------------------------------
+            # 2. 제어기 (Controller)
+            # ----------------------------------------------------------
+            raw_c = None
+            if "meta" in processed_req and isinstance(processed_req["meta"], dict):
+                raw_c = processed_req["meta"].get("component") or processed_req["meta"].get("ecu")
+            if not raw_c:
+                raw_c = self._deep_search(processed_req, ["component", "components", "ecu", "controller"])
+            processed_req["Controller"] = self._ensure_list(raw_c)
+            if not processed_req["Controller"]: processed_req["Controller"] = ["Common"]
+
+            # ----------------------------------------------------------
+            # [NEW] 3. 레벨 (Standard Granularity Level) 추출
+            # ----------------------------------------------------------
+            raw_level = self._deep_search(processed_req, ["standard_granularity_level", "granularity_level", "level"])
+            processed_req["Level"] = str(raw_level) if raw_level else "Unknown"
+
+            # 4. ID
+            raw_id = self._deep_search(processed_req, ["id", "req_id", "ID"])
+            processed_req["ID"] = str(raw_id) if raw_id else f"REQ-{random.randint(1000,9999)}"
 
             analyzed_results.append(processed_req)
                 

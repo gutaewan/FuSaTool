@@ -1,36 +1,151 @@
 {
     "dataset_info": {
-        "dataset_id": "FUSA-BULK-FULL-2026",
-        "version_id": "v1.1.0",
-        "description": "Multi-ECU Functional Safety Requirements with Mixed Granularity",
-        "policy_profile_id": "ISO-26262-ASIL-D"
+        "dataset_id": "FUSA-BULK-FULL-2026-NEW",
+        "version_id": "v1.1.0-new",
+        "description": "Multi-ECU Functional Safety Requirements with Mixed Granularity (enriched: ecu/vehicle/asil/sg/safestate/ftti + IR slots)",
+        "policy_profile_id": "ISO-26262-ASIL-D",
+        "vehicle_models": [
+            "B-EV",
+            "CarA-EV",
+            "CarB-EV",
+            "CarB-SUV",
+            "CarC-Truck"
+        ],
+        "note": "raw_text preserved; missing fields filled with TBD; IR slots tagged from raw_text + existing ir_record when available."
     },
     "requirements": [
         {
             "req_id": "REQ-VCU-01",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "VCU",
-                "goal": "SG-POW-01"
+                "ecu": "VCU",
+                "ASIL": "D",
+                "goal": "SG-POW-01",
+                "SafetyGoal": "SG-POW-01",
+                "safe_state_id": "SS-TORQUE-OFF",
+                "SafeState": "Torque Off / 0Nm",
+                "FTTI": "100ms",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "가속 페달 센서(APS) 1, 2번 채널 간의 출력값 차이가 5% 이상 발생하여 100ms 이상 지속될 경우, VCU는 즉시 토크 출력을 0Nm로 차단해야 한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-POW-01",
+                "SafeState": {
+                    "id": "SS-TORQUE-OFF",
+                    "description": "Torque Off / 0Nm"
+                },
+                "FTTI": "100ms"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "APS Diff > 5% for > 100ms",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "가속 페달 센서(APS) 1, 2번 채널 간의 출력값 차이가 5% 이상 발생하여 100ms 이상 지속될 경우, VCU는 즉시 토크 출력을 0Nm로 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Torque Cut (0Nm)",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Torque Cut (0Nm)",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "가속 페달 센서(APS) 1, 2번 채널 간의 출력값 차이가 5% 이상 발생하여 100ms 이상 지속될 경우, VCU는 즉시 토크 출력을 0Nm로 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "APS Diff > 5% for > 100ms",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "APS Diff > 5% for > 100ms",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
                         "value": "FTTI 100ms",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "가속 페달 센서(APS) 1, 2번 채널 간의 출력값 차이가 5% 이상 발생하여 100ms 이상 지속될 경우, VCU는 즉시 토크 출력을 0Nm로 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "가속 페달 센서(APS) 1, 2번 채널 간의 출력값 차이가 5% 이상 발생하여 100ms 이상 지속될 경우, VCU는 즉시 토크 출력을 0Nm로 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "가속 페달 센서(APS) 1, 2번 채널 간의 출력값 차이가 5% 이상 발생하여 100ms 이상 지속될 경우, VCU는 즉시 토크 출력을 0Nm로 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "가속 페달 센서(APS) 1, 2번 채널 간의 출력값 차이가 5% 이상 발생하여 100ms 이상 지속될 경우, VCU는 즉시 토크 출력을 0Nm로 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
@@ -39,91 +154,403 @@
         {
             "req_id": "REQ-VCU-02",
             "meta": {
+                "vehicle_models": [
+                    "CarC-Truck"
+                ],
                 "source": "CarC-Truck",
                 "component": "VCU",
-                "goal": "SG-POW-01"
+                "ecu": "VCU",
+                "ASIL": "D",
+                "goal": "SG-POW-01",
+                "SafetyGoal": "SG-POW-01",
+                "safe_state_id": "SS-BRAKE-PRIORITY",
+                "SafeState": "Brake Priority / Stabilization",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "브레이크 페달 우선 순위(Brake Override): 운전자가 가속 페달과 브레이크 페달을 동시에 밟을 경우, 차량은 가속을 멈추고 제동을 우선해야 한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-POW-01",
+                "SafeState": {
+                    "id": "SS-BRAKE-PRIORITY",
+                    "description": "Brake Priority / Stabilization"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L1",
                 "slots": [
                     {
-                        "slot_name": "intent",
-                        "value": "제동 의지 우선 반영",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
-                        "value": "Prioritize Braking",
-                        "status": "CONFIRMED"
-                    }
-                ],
-                "unknown_fields": [
-                    "constraints",
-                    "trigger_condition",
-                    "acceptance_criteria"
-                ],
-                "residual": [
+                        "slot_name": "Why",
+                        "value": "제동 의지 우선 반영",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "제동 의지 우선 반영",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
                     {
-                        "type": "comment",
-                        "value": "구체적인 토크 램프 다운 시간 정의 필요",
-                        "anchor": null
+                        "slot_name": "What",
+                        "value": "Prioritize Braking",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Prioritize Braking",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "브레이크 페달 우선 순위(Brake Override): 운전자가 가속 페달과 브레이크 페달을 동시에 밟을 경우, 차량은 가속을 멈추고 제동을 우선해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "TBD (derive from raw_text)",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "브레이크 페달 우선 순위(Brake Override): 운전자가 가속 페달과 브레이크 페달을 동시에 밟을 경우, 차량은 가속을 멈추고 제동을 우선해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "브레이크 페달 우선 순위(Brake Override): 운전자가 가속 페달과 브레이크 페달을 동시에 밟을 경우, 차량은 가속을 멈추고 제동을 우선해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "브레이크 페달 우선 순위(Brake Override): 운전자가 가속 페달과 브레이크 페달을 동시에 밟을 경우, 차량은 가속을 멈추고 제동을 우선해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "브레이크 페달 우선 순위(Brake Override): 운전자가 가속 페달과 브레이크 페달을 동시에 밟을 경우, 차량은 가속을 멈추고 제동을 우선해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "브레이크 페달 우선 순위(Brake Override): 운전자가 가속 페달과 브레이크 페달을 동시에 밟을 경우, 차량은 가속을 멈추고 제동을 우선해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
-                ]
+                ],
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-VCU-03",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "VCU",
-                "goal": "SG-POW-02"
+                "ecu": "VCU",
+                "ASIL": "D",
+                "goal": "SG-POW-02",
+                "SafetyGoal": "SG-POW-02",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "차량 속도가 5kph 이상인 상태에서 운전자가 변속 레버를 P 또는 R로 조작하더라도, VCU는 변속 명령을 무시하고 현재 기어를 유지해야 한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-POW-02",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Speed > 5kph AND Shift Input (P/R)",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-02",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-02",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-POW-02",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차량 속도가 5kph 이상인 상태에서 운전자가 변속 레버를 P 또는 R로 조작하더라도, VCU는 변속 명령을 무시하고 현재 기어를 유지해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Ignore Shift Request",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Ignore Shift Request",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차량 속도가 5kph 이상인 상태에서 운전자가 변속 레버를 P 또는 R로 조작하더라도, VCU는 변속 명령을 무시하고 현재 기어를 유지해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Speed > 5kph AND Shift Input (P/R)",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Speed > 5kph AND Shift Input (P/R)",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차량 속도가 5kph 이상인 상태에서 운전자가 변속 레버를 P 또는 R로 조작하더라도, VCU는 변속 명령을 무시하고 현재 기어를 유지해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차량 속도가 5kph 이상인 상태에서 운전자가 변속 레버를 P 또는 R로 조작하더라도, VCU는 변속 명령을 무시하고 현재 기어를 유지해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차량 속도가 5kph 이상인 상태에서 운전자가 변속 레버를 P 또는 R로 조작하더라도, VCU는 변속 명령을 무시하고 현재 기어를 유지해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차량 속도가 5kph 이상인 상태에서 운전자가 변속 레버를 P 또는 R로 조작하더라도, VCU는 변속 명령을 무시하고 현재 기어를 유지해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "testability"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-VCU-04",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV"
+                ],
                 "source": "CarA-EV",
                 "component": "VCU",
-                "goal": "SG-POW-01"
+                "ecu": "VCU",
+                "ASIL": "D",
+                "goal": "SG-POW-01",
+                "SafetyGoal": "SG-POW-01",
+                "safe_state_id": "SS-LIMP-HOME",
+                "SafeState": "Limp-home Mode",
+                "FTTI": "200ms",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "VCU는 급발진 감지 모니터링 노드와의 E2E 통신이 200ms 이상 두절될 경우, 림프홈(Limp-home) 모드로 진입하여 속도를 40kph로 제한한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-POW-01",
+                "SafeState": {
+                    "id": "SS-LIMP-HOME",
+                    "description": "Limp-home Mode"
+                },
+                "FTTI": "200ms"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "E2E Comm Loss > 200ms",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "VCU는 급발진 감지 모니터링 노드와의 E2E 통신이 200ms 이상 두절될 경우, 림프홈(Limp-home) 모드로 진입하여 속도를 40kph로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Enter Limp-home Mode (Max 40kph)",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Enter Limp-home Mode (Max 40kph)",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
-                        "value": "Timeout 200ms",
-                        "status": "CONFIRMED"
+                        "slot_name": "HowType",
+                        "value": "detect",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "VCU는 급발진 감지 모니터링 노드와의 E2E 통신이 200ms 이상 두절될 경우, 림프홈(Limp-home) 모드로 진입하여 속도를 40kph로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "E2E Comm Loss > 200ms",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "E2E Comm Loss > 200ms",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "Timeout 200ms; FTTI 200ms",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "VCU는 급발진 감지 모니터링 노드와의 E2E 통신이 200ms 이상 두절될 경우, 림프홈(Limp-home) 모드로 진입하여 속도를 40kph로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "VCU는 급발진 감지 모니터링 노드와의 E2E 통신이 200ms 이상 두절될 경우, 림프홈(Limp-home) 모드로 진입하여 속도를 40kph로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "VCU는 급발진 감지 모니터링 노드와의 E2E 통신이 200ms 이상 두절될 경우, 림프홈(Limp-home) 모드로 진입하여 속도를 40kph로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "VCU는 급발진 감지 모니터링 노드와의 E2E 통신이 200ms 이상 두절될 경우, 림프홈(Limp-home) 모드로 진입하여 속도를 40kph로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
@@ -132,28 +559,135 @@
         {
             "req_id": "REQ-VCU-05",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "VCU",
-                "goal": "SG-SAF-01"
+                "ecu": "VCU",
+                "ASIL": "D",
+                "goal": "SG-SAF-01",
+                "SafetyGoal": "SG-SAF-01",
+                "safe_state_id": "SS-HV-OPEN",
+                "SafeState": "High Voltage Isolation (HVIL Open)",
+                "FTTI": "10ms",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "에어백 제어기(ACU)로부터 충돌 신호(Hard Crash) 수신 시, 10ms 이내에 고전압 인터록(HVIL) 회로를 개방해야 한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-SAF-01",
+                "SafeState": {
+                    "id": "SS-HV-OPEN",
+                    "description": "High Voltage Isolation (HVIL Open)"
+                },
+                "FTTI": "10ms"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Crash Signal Received",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-SAF-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-SAF-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-SAF-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "에어백 제어기(ACU)로부터 충돌 신호(Hard Crash) 수신 시, 10ms 이내에 고전압 인터록(HVIL) 회로를 개방해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Open HVIL Circuit",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Open HVIL Circuit",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
-                        "value": "Reaction Time < 10ms",
-                        "status": "CONFIRMED"
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "에어백 제어기(ACU)로부터 충돌 신호(Hard Crash) 수신 시, 10ms 이내에 고전압 인터록(HVIL) 회로를 개방해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Crash Signal Received",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Crash Signal Received",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "Reaction Time < 10ms; FTTI 10ms",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "에어백 제어기(ACU)로부터 충돌 신호(Hard Crash) 수신 시, 10ms 이내에 고전압 인터록(HVIL) 회로를 개방해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "에어백 제어기(ACU)로부터 충돌 신호(Hard Crash) 수신 시, 10ms 이내에 고전압 인터록(HVIL) 회로를 개방해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "에어백 제어기(ACU)로부터 충돌 신호(Hard Crash) 수신 시, 10ms 이내에 고전압 인터록(HVIL) 회로를 개방해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "에어백 제어기(ACU)로부터 충돌 신호(Hard Crash) 수신 시, 10ms 이내에 고전압 인터록(HVIL) 회로를 개방해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
@@ -162,56 +696,269 @@
         {
             "req_id": "REQ-VCU-06",
             "meta": {
+                "vehicle_models": [
+                    "CarB-SUV"
+                ],
                 "source": "CarB-SUV",
                 "component": "VCU",
-                "goal": "SG-POW-03"
+                "ecu": "VCU",
+                "ASIL": "D",
+                "goal": "SG-POW-03",
+                "SafetyGoal": "SG-POW-03",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "경사로 밀림 방지(HAC) 기능 동작 중 유압 제어 실패가 감지되면, 즉시 전자식 파킹 브레이크(EPB)를 체결하여 차량 후퇴를 막아야 한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-POW-03",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "HAC Hydraulic Failure",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-03",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-03",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-POW-03",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "경사로 밀림 방지(HAC) 기능 동작 중 유압 제어 실패가 감지되면, 즉시 전자식 파킹 브레이크(EPB)를 체결하여 차량 후퇴를 막아야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Engage EPB",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Engage EPB",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "detect",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "경사로 밀림 방지(HAC) 기능 동작 중 유압 제어 실패가 감지되면, 즉시 전자식 파킹 브레이크(EPB)를 체결하여 차량 후퇴를 막아야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "HAC Hydraulic Failure",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "HAC Hydraulic Failure",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "경사로 밀림 방지(HAC) 기능 동작 중 유압 제어 실패가 감지되면, 즉시 전자식 파킹 브레이크(EPB)를 체결하여 차량 후퇴를 막아야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "경사로 밀림 방지(HAC) 기능 동작 중 유압 제어 실패가 감지되면, 즉시 전자식 파킹 브레이크(EPB)를 체결하여 차량 후퇴를 막아야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "경사로 밀림 방지(HAC) 기능 동작 중 유압 제어 실패가 감지되면, 즉시 전자식 파킹 브레이크(EPB)를 체결하여 차량 후퇴를 막아야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "경사로 밀림 방지(HAC) 기능 동작 중 유압 제어 실패가 감지되면, 즉시 전자식 파킹 브레이크(EPB)를 체결하여 차량 후퇴를 막아야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "constraints",
-                    "verification_method"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-BMS-01",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "BMS",
-                "goal": "SG-BAT-01"
+                "ecu": "BMS",
+                "ASIL": "C",
+                "goal": "SG-BAT-01",
+                "SafetyGoal": "SG-BAT-01",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "1s",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "어떤 셀이라도 전압이 4.25V를 초과하는 과충전 상태가 1초 이상 지속되면, BMS는 메인 릴레이(PRA)를 차단해야 한다.",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-BAT-01",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "1s"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Any Cell Voltage > 4.25V",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-BAT-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-BAT-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
-                        "value": "Validation Time > 1s",
-                        "status": "CONFIRMED"
+                        "slot_name": "Why",
+                        "value": "Refer to SG-BAT-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "어떤 셀이라도 전압이 4.25V를 초과하는 과충전 상태가 1초 이상 지속되면, BMS는 메인 릴레이(PRA)를 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "What",
                         "value": "Cut-off Main Relay",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Cut-off Main Relay",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "어떤 셀이라도 전압이 4.25V를 초과하는 과충전 상태가 1초 이상 지속되면, BMS는 메인 릴레이(PRA)를 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Any Cell Voltage > 4.25V",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Any Cell Voltage > 4.25V",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "Validation Time > 1s; FTTI 1s",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "어떤 셀이라도 전압이 4.25V를 초과하는 과충전 상태가 1초 이상 지속되면, BMS는 메인 릴레이(PRA)를 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "어떤 셀이라도 전압이 4.25V를 초과하는 과충전 상태가 1초 이상 지속되면, BMS는 메인 릴레이(PRA)를 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "어떤 셀이라도 전압이 4.25V를 초과하는 과충전 상태가 1초 이상 지속되면, BMS는 메인 릴레이(PRA)를 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "어떤 셀이라도 전압이 4.25V를 초과하는 과충전 상태가 1초 이상 지속되면, BMS는 메인 릴레이(PRA)를 차단해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
@@ -220,89 +967,404 @@
         {
             "req_id": "REQ-BMS-02",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "BMS",
-                "goal": "SG-BAT-02"
+                "ecu": "BMS",
+                "ASIL": "C",
+                "goal": "SG-BAT-02",
+                "SafetyGoal": "SG-BAT-02",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "배터리 SOC(충전량)가 5% 이하로 떨어지면 출력을 제한하여 과방전을 방지한다.",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-BAT-02",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L1",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "SOC < 5%",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-BAT-02",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-BAT-02",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-BAT-02",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 SOC(충전량)가 5% 이하로 떨어지면 출력을 제한하여 과방전을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Limit Output Power",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Limit Output Power",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "limit",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 SOC(충전량)가 5% 이하로 떨어지면 출력을 제한하여 과방전을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "SOC < 5%",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SOC < 5%",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 SOC(충전량)가 5% 이하로 떨어지면 출력을 제한하여 과방전을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 SOC(충전량)가 5% 이하로 떨어지면 출력을 제한하여 과방전을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 SOC(충전량)가 5% 이하로 떨어지면 출력을 제한하여 과방전을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 SOC(충전량)가 5% 이하로 떨어지면 출력을 제한하여 과방전을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "constraints",
-                    "acceptance_criteria",
-                    "how_type"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-BMS-03",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "B-EV"
+                ],
                 "source": "CarA/B-EV",
                 "component": "BMS",
-                "goal": "SG-BAT-03"
+                "ecu": "BMS",
+                "ASIL": "C",
+                "goal": "SG-BAT-03",
+                "SafetyGoal": "SG-BAT-03",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "100ms",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "배터리 팩 내부 냉각수 누수 센서가 작동하면, 절연 저항을 주기적으로(100ms 간격) 체크하고 경고등을 점등한다.",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-BAT-03",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "100ms"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Coolant Leak Detected",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-BAT-03",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-BAT-03",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-BAT-03",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 팩 내부 냉각수 누수 센서가 작동하면, 절연 저항을 주기적으로(100ms 간격) 체크하고 경고등을 점등한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Check Isolation & Warning ON",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Check Isolation & Warning ON",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
-                        "value": "Periodicity 100ms",
-                        "status": "CONFIRMED"
+                        "slot_name": "HowType",
+                        "value": "warn",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 팩 내부 냉각수 누수 센서가 작동하면, 절연 저항을 주기적으로(100ms 간격) 체크하고 경고등을 점등한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Coolant Leak Detected",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Coolant Leak Detected",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "Periodicity 100ms; FTTI 100ms",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 팩 내부 냉각수 누수 센서가 작동하면, 절연 저항을 주기적으로(100ms 간격) 체크하고 경고등을 점등한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 팩 내부 냉각수 누수 센서가 작동하면, 절연 저항을 주기적으로(100ms 간격) 체크하고 경고등을 점등한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 팩 내부 냉각수 누수 센서가 작동하면, 절연 저항을 주기적으로(100ms 간격) 체크하고 경고등을 점등한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "배터리 팩 내부 냉각수 누수 센서가 작동하면, 절연 저항을 주기적으로(100ms 간격) 체크하고 경고등을 점등한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "acceptance_criteria"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-BMS-04",
             "meta": {
+                "vehicle_models": [
+                    "CarC-Truck"
+                ],
                 "source": "CarC-Truck",
                 "component": "BMS",
-                "goal": "SG-BAT-01"
+                "ecu": "BMS",
+                "ASIL": "C",
+                "goal": "SG-BAT-01",
+                "SafetyGoal": "SG-BAT-01",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "1s",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "Car C의 고출력 팩은 온도 상승 속도가 빠르므로, 셀 온도가 60도 도달 시 1초 이내(FTTI)에 전류량을 50%로 디레이팅해야 한다.",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-BAT-01",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "1s"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Cell Temp >= 60C",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-BAT-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-BAT-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
-                        "value": "FTTI 1s",
-                        "status": "CONFIRMED"
+                        "slot_name": "Why",
+                        "value": "Refer to SG-BAT-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Car C의 고출력 팩은 온도 상승 속도가 빠르므로, 셀 온도가 60도 도달 시 1초 이내(FTTI)에 전류량을 50%로 디레이팅해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "What",
                         "value": "Derate Current to 50%",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Derate Current to 50%",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "limit",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Car C의 고출력 팩은 온도 상승 속도가 빠르므로, 셀 온도가 60도 도달 시 1초 이내(FTTI)에 전류량을 50%로 디레이팅해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Cell Temp >= 60C",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Cell Temp >= 60C",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI 1s",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Car C의 고출력 팩은 온도 상승 속도가 빠르므로, 셀 온도가 60도 도달 시 1초 이내(FTTI)에 전류량을 50%로 디레이팅해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Car C의 고출력 팩은 온도 상승 속도가 빠르므로, 셀 온도가 60도 도달 시 1초 이내(FTTI)에 전류량을 50%로 디레이팅해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Car C의 고출력 팩은 온도 상승 속도가 빠르므로, 셀 온도가 60도 도달 시 1초 이내(FTTI)에 전류량을 50%로 디레이팅해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Car C의 고출력 팩은 온도 상승 속도가 빠르므로, 셀 온도가 60도 도달 시 1초 이내(FTTI)에 전류량을 50%로 디레이팅해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
@@ -311,115 +1373,540 @@
         {
             "req_id": "REQ-BMS-05",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "BMS",
-                "goal": "SG-BAT-04"
+                "ecu": "BMS",
+                "ASIL": "C",
+                "goal": "SG-BAT-04",
+                "SafetyGoal": "SG-BAT-04",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "특정 셀 전압 센서 고장(Open/Short) 시, 인접 셀의 평균 전압값으로 대체하여 모니터링을 지속하되 충전은 금지한다.",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-BAT-04",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Voltage Sensor Fail",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-BAT-04",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-BAT-04",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-BAT-04",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "특정 셀 전압 센서 고장(Open/Short) 시, 인접 셀의 평균 전압값으로 대체하여 모니터링을 지속하되 충전은 금지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Use Avg Value & Inhibit Charge",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Use Avg Value & Inhibit Charge",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "redundancy",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "특정 셀 전압 센서 고장(Open/Short) 시, 인접 셀의 평균 전압값으로 대체하여 모니터링을 지속하되 충전은 금지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Voltage Sensor Fail",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Voltage Sensor Fail",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "특정 셀 전압 센서 고장(Open/Short) 시, 인접 셀의 평균 전압값으로 대체하여 모니터링을 지속하되 충전은 금지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "특정 셀 전압 센서 고장(Open/Short) 시, 인접 셀의 평균 전압값으로 대체하여 모니터링을 지속하되 충전은 금지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "특정 셀 전압 센서 고장(Open/Short) 시, 인접 셀의 평균 전압값으로 대체하여 모니터링을 지속하되 충전은 금지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "특정 셀 전압 센서 고장(Open/Short) 시, 인접 셀의 평균 전압값으로 대체하여 모니터링을 지속하되 충전은 금지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "verification_method"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-MCU-01",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV"
+                ],
                 "source": "CarA-EV",
                 "component": "Inverter",
-                "goal": "SG-POW-01"
+                "ecu": "Inverter",
+                "ASIL": "C",
+                "goal": "SG-POW-01",
+                "SafetyGoal": "SG-POW-01",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "IGBT 접합부 온도(Tj)가 150도를 초과할 경우, 모터 출력을 온도 상승분에 비례하여 선형적으로 제한한다.",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-POW-01",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "IGBT Temp > 150C",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_type",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "IGBT 접합부 온도(Tj)가 150도를 초과할 경우, 모터 출력을 온도 상승분에 비례하여 선형적으로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
+                        "value": "TBD (derive from raw_text)",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "IGBT 접합부 온도(Tj)가 150도를 초과할 경우, 모터 출력을 온도 상승분에 비례하여 선형적으로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
                         "value": "Linear Derating",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "IGBT 접합부 온도(Tj)가 150도를 초과할 경우, 모터 출력을 온도 상승분에 비례하여 선형적으로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "IGBT Temp > 150C",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "IGBT Temp > 150C",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "IGBT 접합부 온도(Tj)가 150도를 초과할 경우, 모터 출력을 온도 상승분에 비례하여 선형적으로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "IGBT 접합부 온도(Tj)가 150도를 초과할 경우, 모터 출력을 온도 상승분에 비례하여 선형적으로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "IGBT 접합부 온도(Tj)가 150도를 초과할 경우, 모터 출력을 온도 상승분에 비례하여 선형적으로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "IGBT 접합부 온도(Tj)가 150도를 초과할 경우, 모터 출력을 온도 상승분에 비례하여 선형적으로 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "acceptance_criteria",
-                    "constraints"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-MCU-02",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "Inverter",
-                "goal": "SG-POW-01"
+                "ecu": "Inverter",
+                "ASIL": "C",
+                "goal": "SG-POW-01",
+                "SafetyGoal": "SG-POW-01",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "D단(Drive)에서 차량이 뒤로 10cm 이상 밀릴 경우(Anti-rollback), 인버터는 즉시 정방향 토크를 인가하여 밀림을 방지한다.",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-POW-01",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Rollback dist > 10cm",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "D단(Drive)에서 차량이 뒤로 10cm 이상 밀릴 경우(Anti-rollback), 인버터는 즉시 정방향 토크를 인가하여 밀림을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Inject Forward Torque",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Inject Forward Torque",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "D단(Drive)에서 차량이 뒤로 10cm 이상 밀릴 경우(Anti-rollback), 인버터는 즉시 정방향 토크를 인가하여 밀림을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Rollback dist > 10cm",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Rollback dist > 10cm",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "D단(Drive)에서 차량이 뒤로 10cm 이상 밀릴 경우(Anti-rollback), 인버터는 즉시 정방향 토크를 인가하여 밀림을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "D단(Drive)에서 차량이 뒤로 10cm 이상 밀릴 경우(Anti-rollback), 인버터는 즉시 정방향 토크를 인가하여 밀림을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "D단(Drive)에서 차량이 뒤로 10cm 이상 밀릴 경우(Anti-rollback), 인버터는 즉시 정방향 토크를 인가하여 밀림을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "D단(Drive)에서 차량이 뒤로 10cm 이상 밀릴 경우(Anti-rollback), 인버터는 즉시 정방향 토크를 인가하여 밀림을 방지한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "constraints"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-MCU-03",
             "meta": {
+                "vehicle_models": [
+                    "CarC-Truck"
+                ],
                 "source": "CarC-Truck",
                 "component": "Inverter",
-                "goal": "SG-POW-01"
+                "ecu": "Inverter",
+                "ASIL": "C",
+                "goal": "SG-POW-01",
+                "SafetyGoal": "SG-POW-01",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "20ms",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "3상 단락(Phase Short) 발생 시, 트럭 모터의 높은 역기전력을 고려하여 20ms 이내에 모든 하단 IGBT를 켜는 ASC(Active Short Circuit) 제어를 수행한다.",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-POW-01",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "20ms"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Phase Short Detected",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "3상 단락(Phase Short) 발생 시, 트럭 모터의 높은 역기전력을 고려하여 20ms 이내에 모든 하단 IGBT를 켜는 ASC(Active Short Circuit) 제어를 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Enable ASC (Low-side ON)",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Enable ASC (Low-side ON)",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
-                        "value": "FTTI 20ms",
-                        "status": "CONFIRMED"
-                    },
-                    {
-                        "slot_name": "how_type",
+                        "slot_name": "HowType",
                         "value": "Hardware Protection",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "3상 단락(Phase Short) 발생 시, 트럭 모터의 높은 역기전력을 고려하여 20ms 이내에 모든 하단 IGBT를 켜는 ASC(Active Short Circuit) 제어를 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Phase Short Detected",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Phase Short Detected",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI 20ms",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "3상 단락(Phase Short) 발생 시, 트럭 모터의 높은 역기전력을 고려하여 20ms 이내에 모든 하단 IGBT를 켜는 ASC(Active Short Circuit) 제어를 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "3상 단락(Phase Short) 발생 시, 트럭 모터의 높은 역기전력을 고려하여 20ms 이내에 모든 하단 IGBT를 켜는 ASC(Active Short Circuit) 제어를 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "3상 단락(Phase Short) 발생 시, 트럭 모터의 높은 역기전력을 고려하여 20ms 이내에 모든 하단 IGBT를 켜는 ASC(Active Short Circuit) 제어를 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "3상 단락(Phase Short) 발생 시, 트럭 모터의 높은 역기전력을 고려하여 20ms 이내에 모든 하단 IGBT를 켜는 ASC(Active Short Circuit) 제어를 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
@@ -428,55 +1915,269 @@
         {
             "req_id": "REQ-MCU-04",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "Inverter",
-                "goal": "SG-POW-05"
+                "ecu": "Inverter",
+                "ASIL": "C",
+                "goal": "SG-POW-05",
+                "SafetyGoal": "SG-POW-05",
+                "safe_state_id": "SS-TORQUE-OFF",
+                "SafeState": "Torque Off / 0Nm",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "모터 위치 센서(Resolver) 신호의 CRC 에러가 연속 3회 발생하면, 토크 제어를 중단하고 안전 상태(Free Wheeling)로 전환한다.",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-POW-05",
+                "SafeState": {
+                    "id": "SS-TORQUE-OFF",
+                    "description": "Torque Off / 0Nm"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Resolver CRC Error count >= 3",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-05",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-05",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-POW-05",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "모터 위치 센서(Resolver) 신호의 CRC 에러가 연속 3회 발생하면, 토크 제어를 중단하고 안전 상태(Free Wheeling)로 전환한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Free Wheeling (Torque Off)",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Free Wheeling (Torque Off)",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "transition",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "모터 위치 센서(Resolver) 신호의 CRC 에러가 연속 3회 발생하면, 토크 제어를 중단하고 안전 상태(Free Wheeling)로 전환한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Resolver CRC Error count >= 3",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Resolver CRC Error count >= 3",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "모터 위치 센서(Resolver) 신호의 CRC 에러가 연속 3회 발생하면, 토크 제어를 중단하고 안전 상태(Free Wheeling)로 전환한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "모터 위치 센서(Resolver) 신호의 CRC 에러가 연속 3회 발생하면, 토크 제어를 중단하고 안전 상태(Free Wheeling)로 전환한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "모터 위치 센서(Resolver) 신호의 CRC 에러가 연속 3회 발생하면, 토크 제어를 중단하고 안전 상태(Free Wheeling)로 전환한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "모터 위치 센서(Resolver) 신호의 CRC 에러가 연속 3회 발생하면, 토크 제어를 중단하고 안전 상태(Free Wheeling)로 전환한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "constraints"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-MCU-05",
             "meta": {
+                "vehicle_models": [
+                    "CarB-SUV"
+                ],
                 "source": "CarB-SUV",
                 "component": "Inverter",
-                "goal": "SG-POW-01"
+                "ecu": "Inverter",
+                "ASIL": "C",
+                "goal": "SG-POW-01",
+                "SafetyGoal": "SG-POW-01",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "5s",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "시동 꺼짐(IG Off) 후, 인버터 내 DC Link 커패시터의 잔류 전압을 5초 이내에 60V 미만으로 방전시켜야 한다(Active Discharge).",
+            "safety": {
+                "ASIL": "C",
+                "SafetyGoal": "SG-POW-01",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "5s"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "IG Off",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-POW-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-POW-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "시동 꺼짐(IG Off) 후, 인버터 내 DC Link 커패시터의 잔류 전압을 5초 이내에 60V 미만으로 방전시켜야 한다(Active Discharge).",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Active Discharge",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Active Discharge",
+                                "offset_hint": 69
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
-                        "value": "< 60V within 5s",
-                        "status": "CONFIRMED"
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "시동 꺼짐(IG Off) 후, 인버터 내 DC Link 커패시터의 잔류 전압을 5초 이내에 60V 미만으로 방전시켜야 한다(Active Discharge).",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "IG Off",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "IG Off",
+                                "offset_hint": 6
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "< 60V within 5s; FTTI 5s",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "시동 꺼짐(IG Off) 후, 인버터 내 DC Link 커패시터의 잔류 전압을 5초 이내에 60V 미만으로 방전시켜야 한다(Active Discharge).",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "시동 꺼짐(IG Off) 후, 인버터 내 DC Link 커패시터의 잔류 전압을 5초 이내에 60V 미만으로 방전시켜야 한다(Active Discharge).",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "시동 꺼짐(IG Off) 후, 인버터 내 DC Link 커패시터의 잔류 전압을 5초 이내에 60V 미만으로 방전시켜야 한다(Active Discharge).",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "시동 꺼짐(IG Off) 후, 인버터 내 DC Link 커패시터의 잔류 전압을 5초 이내에 60V 미만으로 방전시켜야 한다(Active Discharge).",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
@@ -485,111 +2186,537 @@
         {
             "req_id": "REQ-ADA-01",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV"
+                ],
                 "source": "CarA-EV",
                 "component": "Lidar",
-                "goal": "SG-ADA-01"
+                "ecu": "Lidar",
+                "ASIL": "B",
+                "goal": "SG-ADA-01",
+                "SafetyGoal": "SG-ADA-01",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "라이다(Lidar) 표면에 이물질이 묻어 시야가 50% 이상 가려질 경우(Occlusion), 자율주행 기능을 해제하고 운전자에게 제어권을 이양한다.",
+            "safety": {
+                "ASIL": "B",
+                "SafetyGoal": "SG-ADA-01",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Occlusion > 50%",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-ADA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-ADA-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-ADA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "라이다(Lidar) 표면에 이물질이 묻어 시야가 50% 이상 가려질 경우(Occlusion), 자율주행 기능을 해제하고 운전자에게 제어권을 이양한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Disengage AD & Handover",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Disengage AD & Handover",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "라이다(Lidar) 표면에 이물질이 묻어 시야가 50% 이상 가려질 경우(Occlusion), 자율주행 기능을 해제하고 운전자에게 제어권을 이양한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Occlusion > 50%",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Occlusion > 50%",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "라이다(Lidar) 표면에 이물질이 묻어 시야가 50% 이상 가려질 경우(Occlusion), 자율주행 기능을 해제하고 운전자에게 제어권을 이양한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "라이다(Lidar) 표면에 이물질이 묻어 시야가 50% 이상 가려질 경우(Occlusion), 자율주행 기능을 해제하고 운전자에게 제어권을 이양한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "라이다(Lidar) 표면에 이물질이 묻어 시야가 50% 이상 가려질 경우(Occlusion), 자율주행 기능을 해제하고 운전자에게 제어권을 이양한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "라이다(Lidar) 표면에 이물질이 묻어 시야가 50% 이상 가려질 경우(Occlusion), 자율주행 기능을 해제하고 운전자에게 제어권을 이양한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "constraints",
-                    "verification_method"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-ADA-02",
             "meta": {
+                "vehicle_models": [
+                    "CarB-SUV"
+                ],
                 "source": "CarB-SUV",
                 "component": "Radar",
-                "goal": "SG-ADA-01"
+                "ecu": "Radar",
+                "ASIL": "D",
+                "goal": "SG-ADA-01",
+                "SafetyGoal": "SG-ADA-01",
+                "safe_state_id": "SS-FUNCTION-INHIBIT",
+                "SafeState": "Function Inhibited",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "레이더 신호 간섭(Jamming)이 의심될 경우, 오작동 방지를 위해 긴급 제동(AEB) 기능의 작동을 보류한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-ADA-01",
+                "SafeState": {
+                    "id": "SS-FUNCTION-INHIBIT",
+                    "description": "Function Inhibited"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L1",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Radar Jamming Suspected",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-ADA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-ADA-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-ADA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "레이더 신호 간섭(Jamming)이 의심될 경우, 오작동 방지를 위해 긴급 제동(AEB) 기능의 작동을 보류한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Inhibit AEB",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Inhibit AEB",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "레이더 신호 간섭(Jamming)이 의심될 경우, 오작동 방지를 위해 긴급 제동(AEB) 기능의 작동을 보류한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Radar Jamming Suspected",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Radar Jamming Suspected",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "레이더 신호 간섭(Jamming)이 의심될 경우, 오작동 방지를 위해 긴급 제동(AEB) 기능의 작동을 보류한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "레이더 신호 간섭(Jamming)이 의심될 경우, 오작동 방지를 위해 긴급 제동(AEB) 기능의 작동을 보류한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "레이더 신호 간섭(Jamming)이 의심될 경우, 오작동 방지를 위해 긴급 제동(AEB) 기능의 작동을 보류한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "레이더 신호 간섭(Jamming)이 의심될 경우, 오작동 방지를 위해 긴급 제동(AEB) 기능의 작동을 보류한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "acceptance_criteria",
-                    "constraints"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-ADA-03",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "Camera",
-                "goal": "SG-ADA-02"
+                "ecu": "Camera",
+                "ASIL": "B",
+                "goal": "SG-ADA-02",
+                "SafetyGoal": "SG-ADA-02",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "차선 이탈 방지 보조(LKA) 시스템이 생성하는 조향 토크는 어떠한 경우에도 3Nm를 초과해서는 안 된다.",
+            "safety": {
+                "ASIL": "B",
+                "SafetyGoal": "SG-ADA-02",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "intent",
-                        "value": "운전자 조향 개입 보장",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-ADA-02",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-ADA-02",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
-                        "value": "Max Torque < 3Nm",
-                        "status": "CONFIRMED"
+                        "slot_name": "Why",
+                        "value": "운전자 조향 개입 보장",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "운전자 조향 개입 보장",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
+                        "value": "TBD (derive from raw_text)",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차선 이탈 방지 보조(LKA) 시스템이 생성하는 조향 토크는 어떠한 경우에도 3Nm를 초과해서는 안 된다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차선 이탈 방지 보조(LKA) 시스템이 생성하는 조향 토크는 어떠한 경우에도 3Nm를 초과해서는 안 된다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "TBD (derive from raw_text)",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차선 이탈 방지 보조(LKA) 시스템이 생성하는 조향 토크는 어떠한 경우에도 3Nm를 초과해서는 안 된다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "Max Torque < 3Nm; FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차선 이탈 방지 보조(LKA) 시스템이 생성하는 조향 토크는 어떠한 경우에도 3Nm를 초과해서는 안 된다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차선 이탈 방지 보조(LKA) 시스템이 생성하는 조향 토크는 어떠한 경우에도 3Nm를 초과해서는 안 된다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차선 이탈 방지 보조(LKA) 시스템이 생성하는 조향 토크는 어떠한 경우에도 3Nm를 초과해서는 안 된다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "차선 이탈 방지 보조(LKA) 시스템이 생성하는 조향 토크는 어떠한 경우에도 3Nm를 초과해서는 안 된다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "trigger_condition"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-ADA-04",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV"
+                ],
                 "source": "CarA-EV",
                 "component": "ADAS_Main",
-                "goal": "SG-ADA-03"
+                "ecu": "ADAS_Main",
+                "ASIL": "D",
+                "goal": "SG-ADA-03",
+                "SafetyGoal": "SG-ADA-03",
+                "safe_state_id": "SS-BRAKE-PRIORITY",
+                "SafeState": "Brake Priority / Stabilization",
+                "FTTI": "50ms",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "AEB 작동 결정 시, VCU에게 감속 요구 메시지를 보내고 VCU로부터 50ms 이내에 응답(Ack)이 없으면 별도의 유압 제동을 수행한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-ADA-03",
+                "SafeState": {
+                    "id": "SS-BRAKE-PRIORITY",
+                    "description": "Brake Priority / Stabilization"
+                },
+                "FTTI": "50ms"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Goal",
+                        "value": "SG-ADA-03",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-ADA-03",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Why",
+                        "value": "Refer to SG-ADA-03",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "AEB 작동 결정 시, VCU에게 감속 요구 메시지를 보내고 VCU로부터 50ms 이내에 응답(Ack)이 없으면 별도의 유압 제동을 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Req Decel to VCU",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Req Decel to VCU",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "constraints",
-                        "value": "Ack Timeout 50ms",
-                        "status": "CONFIRMED"
-                    },
-                    {
-                        "slot_name": "how_type",
+                        "slot_name": "HowType",
                         "value": "Backup Hydraulic Brake",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "AEB 작동 결정 시, VCU에게 감속 요구 메시지를 보내고 VCU로부터 50ms 이내에 응답(Ack)이 없으면 별도의 유압 제동을 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "TBD (derive from raw_text)",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "AEB 작동 결정 시, VCU에게 감속 요구 메시지를 보내고 VCU로부터 50ms 이내에 응답(Ack)이 없으면 별도의 유압 제동을 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "Ack Timeout 50ms; FTTI 50ms",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "AEB 작동 결정 시, VCU에게 감속 요구 메시지를 보내고 VCU로부터 50ms 이내에 응답(Ack)이 없으면 별도의 유압 제동을 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "AEB 작동 결정 시, VCU에게 감속 요구 메시지를 보내고 VCU로부터 50ms 이내에 응답(Ack)이 없으면 별도의 유압 제동을 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "AEB 작동 결정 시, VCU에게 감속 요구 메시지를 보내고 VCU로부터 50ms 이내에 응답(Ack)이 없으면 별도의 유압 제동을 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "AEB 작동 결정 시, VCU에게 감속 요구 메시지를 보내고 VCU로부터 50ms 이내에 응답(Ack)이 없으면 별도의 유압 제동을 수행한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
@@ -598,79 +2725,406 @@
         {
             "req_id": "REQ-ADA-05",
             "meta": {
+                "vehicle_models": [
+                    "CarB-SUV"
+                ],
                 "source": "CarB-SUV",
                 "component": "ADAS_Main",
-                "goal": "SG-ADA-04"
+                "ecu": "ADAS_Main",
+                "ASIL": "B",
+                "goal": "SG-ADA-04",
+                "SafetyGoal": "SG-ADA-04",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "주차 보조 시스템은 초음파 센서 데이터가 유효 범위를 벗어날 경우 해당 데이터를 무시해야 한다.",
+            "safety": {
+                "ASIL": "B",
+                "SafetyGoal": "SG-ADA-04",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L1",
                 "slots": [
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Goal",
+                        "value": "SG-ADA-04",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-ADA-04",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Why",
+                        "value": "Refer to SG-ADA-04",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "주차 보조 시스템은 초음파 센서 데이터가 유효 범위를 벗어날 경우 해당 데이터를 무시해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Ignore Invalid Data",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Ignore Invalid Data",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "주차 보조 시스템은 초음파 센서 데이터가 유효 범위를 벗어날 경우 해당 데이터를 무시해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "TBD (derive from raw_text)",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "주차 보조 시스템은 초음파 센서 데이터가 유효 범위를 벗어날 경우 해당 데이터를 무시해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "주차 보조 시스템은 초음파 센서 데이터가 유효 범위를 벗어날 경우 해당 데이터를 무시해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "주차 보조 시스템은 초음파 센서 데이터가 유효 범위를 벗어날 경우 해당 데이터를 무시해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "주차 보조 시스템은 초음파 센서 데이터가 유효 범위를 벗어날 경우 해당 데이터를 무시해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "주차 보조 시스템은 초음파 센서 데이터가 유효 범위를 벗어날 경우 해당 데이터를 무시해야 한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "trigger_condition",
-                    "acceptance_criteria",
-                    "constraints"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-ADA-06",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "ADAS_Main",
-                "goal": "SG-ADA-01"
+                "ecu": "ADAS_Main",
+                "ASIL": "B",
+                "goal": "SG-ADA-01",
+                "SafetyGoal": "SG-ADA-01",
+                "safe_state_id": "SS-FUNCTION-INHIBIT",
+                "SafeState": "Function Inhibited",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "카메라와 레이더 간의 퓨전 데이터 불일치(Noise)가 임계치를 넘으면, Fail-safe 경고를 띄우고 기능을 비활성화한다.",
+            "safety": {
+                "ASIL": "B",
+                "SafetyGoal": "SG-ADA-01",
+                "SafeState": {
+                    "id": "SS-FUNCTION-INHIBIT",
+                    "description": "Function Inhibited"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Fusion Noise > Threshold",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-ADA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-ADA-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-ADA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "카메라와 레이더 간의 퓨전 데이터 불일치(Noise)가 임계치를 넘으면, Fail-safe 경고를 띄우고 기능을 비활성화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Warning & Disable Function",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Warning & Disable Function",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "warn",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "카메라와 레이더 간의 퓨전 데이터 불일치(Noise)가 임계치를 넘으면, Fail-safe 경고를 띄우고 기능을 비활성화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Fusion Noise > Threshold",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Fusion Noise > Threshold",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "카메라와 레이더 간의 퓨전 데이터 불일치(Noise)가 임계치를 넘으면, Fail-safe 경고를 띄우고 기능을 비활성화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "카메라와 레이더 간의 퓨전 데이터 불일치(Noise)가 임계치를 넘으면, Fail-safe 경고를 띄우고 기능을 비활성화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "카메라와 레이더 간의 퓨전 데이터 불일치(Noise)가 임계치를 넘으면, Fail-safe 경고를 띄우고 기능을 비활성화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "카메라와 레이더 간의 퓨전 데이터 불일치(Noise)가 임계치를 넘으면, Fail-safe 경고를 띄우고 기능을 비활성화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "constraints"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-ESP-01",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "ESP",
-                "goal": "SG-CHA-01"
+                "ecu": "ESP",
+                "ASIL": "D",
+                "goal": "SG-CHA-01",
+                "SafetyGoal": "SG-CHA-01",
+                "safe_state_id": "SS-BRAKE-PRIORITY",
+                "SafeState": "Brake Priority / Stabilization",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "운전자가 급제동 시 휠 잠김(Lock-up)을 방지하기 위해 ABS 펌프를 가동하여 브레이크 압력을 초당 10회 이상 증감 제어한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-CHA-01",
+                "SafeState": {
+                    "id": "SS-BRAKE-PRIORITY",
+                    "description": "Brake Priority / Stabilization"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Wheel Lock-up Risk",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-CHA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-CHA-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-CHA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "운전자가 급제동 시 휠 잠김(Lock-up)을 방지하기 위해 ABS 펌프를 가동하여 브레이크 압력을 초당 10회 이상 증감 제어한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Modulate Brake Pressure",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Modulate Brake Pressure",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "acceptance_criteria",
+                        "slot_name": "HowType",
+                        "value": "mitigate",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "운전자가 급제동 시 휠 잠김(Lock-up)을 방지하기 위해 ABS 펌프를 가동하여 브레이크 압력을 초당 10회 이상 증감 제어한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Wheel Lock-up Risk",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Wheel Lock-up Risk",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "운전자가 급제동 시 휠 잠김(Lock-up)을 방지하기 위해 ABS 펌프를 가동하여 브레이크 압력을 초당 10회 이상 증감 제어한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "운전자가 급제동 시 휠 잠김(Lock-up)을 방지하기 위해 ABS 펌프를 가동하여 브레이크 압력을 초당 10회 이상 증감 제어한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
                         "value": "Control Freq > 10Hz",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Control Freq > 10Hz",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "운전자가 급제동 시 휠 잠김(Lock-up)을 방지하기 위해 ABS 펌프를 가동하여 브레이크 압력을 초당 10회 이상 증감 제어한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
@@ -679,111 +3133,540 @@
         {
             "req_id": "REQ-ESP-02",
             "meta": {
+                "vehicle_models": [
+                    "CarB-SUV"
+                ],
                 "source": "CarB-SUV",
                 "component": "ESP",
-                "goal": "SG-CHA-02"
+                "ecu": "ESP",
+                "ASIL": "D",
+                "goal": "SG-CHA-02",
+                "SafetyGoal": "SG-CHA-02",
+                "safe_state_id": "SS-BRAKE-PRIORITY",
+                "SafeState": "Brake Priority / Stabilization",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "SUV 차량의 전복(Rollover) 위험이 감지되면, 선회 바깥쪽 전륜에 강한 제동을 가하여 차량 자세를 안정화한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-CHA-02",
+                "SafeState": {
+                    "id": "SS-BRAKE-PRIORITY",
+                    "description": "Brake Priority / Stabilization"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Rollover Detected",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-CHA-02",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-CHA-02",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-CHA-02",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SUV 차량의 전복(Rollover) 위험이 감지되면, 선회 바깥쪽 전륜에 강한 제동을 가하여 차량 자세를 안정화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Brake Outer Front Wheel",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Brake Outer Front Wheel",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "detect",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SUV 차량의 전복(Rollover) 위험이 감지되면, 선회 바깥쪽 전륜에 강한 제동을 가하여 차량 자세를 안정화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Rollover Detected",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Rollover Detected",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SUV 차량의 전복(Rollover) 위험이 감지되면, 선회 바깥쪽 전륜에 강한 제동을 가하여 차량 자세를 안정화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SUV 차량의 전복(Rollover) 위험이 감지되면, 선회 바깥쪽 전륜에 강한 제동을 가하여 차량 자세를 안정화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SUV 차량의 전복(Rollover) 위험이 감지되면, 선회 바깥쪽 전륜에 강한 제동을 가하여 차량 자세를 안정화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SUV 차량의 전복(Rollover) 위험이 감지되면, 선회 바깥쪽 전륜에 강한 제동을 가하여 차량 자세를 안정화한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "constraints",
-                    "verification_method"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-ESP-03",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "ESP",
-                "goal": "SG-CHA-01"
+                "ecu": "ESP",
+                "ASIL": "D",
+                "goal": "SG-CHA-01",
+                "SafetyGoal": "SG-CHA-01",
+                "safe_state_id": "SS-SAFE-DEFAULT",
+                "SafeState": "Safe Default",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "휠 스피드 센서 단선 시, 해당 휠의 브레이크 유압을 현재 상태로 유지(Hold)하고 ABS 기능을 제한한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-CHA-01",
+                "SafeState": {
+                    "id": "SS-SAFE-DEFAULT",
+                    "description": "Safe Default"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Wheel Speed Sensor Open",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-CHA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-CHA-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-CHA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "휠 스피드 센서 단선 시, 해당 휠의 브레이크 유압을 현재 상태로 유지(Hold)하고 ABS 기능을 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Pressure Hold & Limit ABS",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Pressure Hold & Limit ABS",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "limit",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "휠 스피드 센서 단선 시, 해당 휠의 브레이크 유압을 현재 상태로 유지(Hold)하고 ABS 기능을 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Wheel Speed Sensor Open",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Wheel Speed Sensor Open",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "휠 스피드 센서 단선 시, 해당 휠의 브레이크 유압을 현재 상태로 유지(Hold)하고 ABS 기능을 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "휠 스피드 센서 단선 시, 해당 휠의 브레이크 유압을 현재 상태로 유지(Hold)하고 ABS 기능을 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "휠 스피드 센서 단선 시, 해당 휠의 브레이크 유압을 현재 상태로 유지(Hold)하고 ABS 기능을 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "휠 스피드 센서 단선 시, 해당 휠의 브레이크 유압을 현재 상태로 유지(Hold)하고 ABS 기능을 제한한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "constraints"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-ESP-04",
             "meta": {
+                "vehicle_models": [
+                    "CarC-Truck"
+                ],
                 "source": "CarC-Truck",
                 "component": "ESP",
-                "goal": "SG-CHA-03"
+                "ecu": "ESP",
+                "ASIL": "D",
+                "goal": "SG-CHA-03",
+                "SafetyGoal": "SG-CHA-03",
+                "safe_state_id": "SS-BRAKE-PRIORITY",
+                "SafeState": "Brake Priority / Stabilization",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "트레일러 연결 상태에서 후미 흔들림(Sway) 현상 감지 시, 좌우 바퀴에 비대칭 제동력을 가하여 진동을 억제한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-CHA-03",
+                "SafeState": {
+                    "id": "SS-BRAKE-PRIORITY",
+                    "description": "Brake Priority / Stabilization"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L2",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Trailer Sway Detected",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-CHA-03",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-CHA-03",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-CHA-03",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "트레일러 연결 상태에서 후미 흔들림(Sway) 현상 감지 시, 좌우 바퀴에 비대칭 제동력을 가하여 진동을 억제한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "Asymmetric Braking",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Asymmetric Braking",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "HowType",
+                        "value": "detect",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "트레일러 연결 상태에서 후미 흔들림(Sway) 현상 감지 시, 좌우 바퀴에 비대칭 제동력을 가하여 진동을 억제한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Trailer Sway Detected",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Trailer Sway Detected",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "트레일러 연결 상태에서 후미 흔들림(Sway) 현상 감지 시, 좌우 바퀴에 비대칭 제동력을 가하여 진동을 억제한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "트레일러 연결 상태에서 후미 흔들림(Sway) 현상 감지 시, 좌우 바퀴에 비대칭 제동력을 가하여 진동을 억제한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "트레일러 연결 상태에서 후미 흔들림(Sway) 현상 감지 시, 좌우 바퀴에 비대칭 제동력을 가하여 진동을 억제한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "트레일러 연결 상태에서 후미 흔들림(Sway) 현상 감지 시, 좌우 바퀴에 비대칭 제동력을 가하여 진동을 억제한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
-                "unknown_fields": [
-                    "constraints",
-                    "acceptance_criteria"
-                ]
+                "unknown_fields": []
             }
         },
         {
             "req_id": "REQ-ESP-05",
             "meta": {
+                "vehicle_models": [
+                    "CarA-EV",
+                    "CarB-SUV",
+                    "CarC-Truck",
+                    "CarB-EV"
+                ],
                 "source": "Common",
                 "component": "ESP",
-                "goal": "SG-CHA-01"
+                "ecu": "ESP",
+                "ASIL": "D",
+                "goal": "SG-CHA-01",
+                "SafetyGoal": "SG-CHA-01",
+                "safe_state_id": "SS-BRAKE-PRIORITY",
+                "SafeState": "Brake Priority / Stabilization",
+                "FTTI": "TBD",
+                "owner": "TBD",
+                "status": "DRAFT"
             },
             "raw_text": "통신 지연으로 인해 상위 제어기 지령을 받지 못할 경우, EBD(전자식 제동력 배분)는 독립적인 맵 데이터를 기반으로 제동력을 배분한다.",
+            "safety": {
+                "ASIL": "D",
+                "SafetyGoal": "SG-CHA-01",
+                "SafeState": {
+                    "id": "SS-BRAKE-PRIORITY",
+                    "description": "Brake Priority / Stabilization"
+                },
+                "FTTI": "TBD"
+            },
             "ir_record": {
                 "standard_granularity_level": "L3",
                 "slots": [
                     {
-                        "slot_name": "trigger_condition",
-                        "value": "Comm Timeout",
-                        "status": "CONFIRMED"
+                        "slot_name": "Goal",
+                        "value": "SG-CHA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "SG-CHA-01",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "action_statement",
+                        "slot_name": "Why",
+                        "value": "Refer to SG-CHA-01",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "통신 지연으로 인해 상위 제어기 지령을 받지 못할 경우, EBD(전자식 제동력 배분)는 독립적인 맵 데이터를 기반으로 제동력을 배분한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "What",
                         "value": "EBD Standalone Control",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "EBD Standalone Control",
+                                "offset_hint": null
+                            }
+                        ]
                     },
                     {
-                        "slot_name": "how_type",
+                        "slot_name": "HowType",
                         "value": "Internal Map based",
-                        "status": "CONFIRMED"
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "통신 지연으로 인해 상위 제어기 지령을 받지 못할 경우, EBD(전자식 제동력 배분)는 독립적인 맵 데이터를 기반으로 제동력을 배분한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "When",
+                        "value": "Comm Timeout",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "Comm Timeout",
+                                "offset_hint": null
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Constraints",
+                        "value": "FTTI TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "통신 지연으로 인해 상위 제어기 지령을 받지 못할 경우, EBD(전자식 제동력 배분)는 독립적인 맵 데이터를 기반으로 제동력을 배분한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Verification",
+                        "value": "Test + Review",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "통신 지연으로 인해 상위 제어기 지령을 받지 못할 경우, EBD(전자식 제동력 배분)는 독립적인 맵 데이터를 기반으로 제동력을 배분한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "AcceptanceCriteria",
+                        "value": "TBD",
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "통신 지연으로 인해 상위 제어기 지령을 받지 못할 경우, EBD(전자식 제동력 배분)는 독립적인 맵 데이터를 기반으로 제동력을 배분한다.",
+                                "offset_hint": 0
+                            }
+                        ]
+                    },
+                    {
+                        "slot_name": "Anchors",
+                        "value": null,
+                        "status": "CONFIRMED",
+                        "anchors": [
+                            {
+                                "quote": "통신 지연으로 인해 상위 제어기 지령을 받지 못할 경우, EBD(전자식 제동력 배분)는 독립적인 맵 데이터를 기반으로 제동력을 배분한다.",
+                                "offset_hint": 0
+                            }
+                        ]
                     }
                 ],
                 "unknown_fields": []
