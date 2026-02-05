@@ -1,0 +1,6 @@
+
+### TASK ###
+Analyze the following requirement.
+Output JSON format with 'mrs_type', 'slots', and 'missing_analysis'.
+
+Target Requirement:

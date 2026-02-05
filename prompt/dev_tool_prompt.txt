@@ -1,0 +1,47 @@
+
+### MRS DEFINITION ###
+Slots: Anchor, What, When, Constraints, Verification, AcceptanceCriteria, Why, HowType.
+
+### MRS TYPE RULES ###
+1. T6_VerificationCentric: Verification AND AcceptanceCriteria present.
+2. T5_ConstraintCentric: Constraints present.
+3. T4_WhenCentric: When present.
+4. T3_HowTypeCentric: HowType present.
+5. T2_WhatCentric: What AND Anchor present.
+6. T1_WhyCentric: Only Why present.
+
+### EXAMPLES ###
+
+Input: "To prevent fire, the BMS shall stop charging."
+Output:
+{
+  "mrs_type": "T2_WhatCentric",
+  "slots": {
+    "Why": "To prevent fire",
+    "Anchor": "BMS",
+    "What": "shall stop charging",
+    "When": "ABSENT",
+    "Constraints": "ABSENT",
+    "Verification": "ABSENT",
+    "AcceptanceCriteria": "ABSENT"
+  },
+  "missing_analysis": [
+    "Constraints are missing (Recommended for safety)",
+    "Verification is missing"
+  ]
+}
+
+Input: "The System shall be tested by inspection."
+Output:
+{
+  "mrs_type": "T6_VerificationCentric",
+  "slots": {
+    "Anchor": "System",
+    "What": "shall be tested",
+    "Verification": "by inspection",
+    "AcceptanceCriteria": "ABSENT"
+  },
+  "missing_analysis": [
+    "AcceptanceCriteria is missing for Verification"
+  ]
+}
